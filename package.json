@@ -1,0 +1,20 @@
+{
+  "name": "d3-mindmap",
+  "version": "0.1.0",
+  "description": "Your brain mapped mind brain map",
+  "main": "index.js",
+  "dependencies": {
+    "cz-conventional-changelog": "^3.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mind",
+    "map",
+    "d3"
+  ],
+  "author": "cousinmango",
+  "license": "GPL-3.0-or-later"
+}
