@@ -3,11 +3,10 @@
   "version": "0.1.0",
   "description": "Your brain mapped mind brain map",
   "main": "index.js",
-  "dependencies": {
-    "cz-conventional-changelog": "^3.3.0"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/d3": "^6.2.0"
+    "@types/d3": "^6.2.0",
+    "cz-conventional-changelog": "^3.3.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,5 +17,10 @@
     "d3"
   ],
   "author": "cousinmango",
-  "license": "GPL-3.0-or-later"
+  "license": "GPL-3.0-or-later",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }
