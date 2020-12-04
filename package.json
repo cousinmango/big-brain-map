@@ -6,7 +6,8 @@
   "dependencies": {},
   "devDependencies": {
     "@types/d3": "^6.2.0",
-    "cz-conventional-changelog": "^3.3.0"
+    "cz-conventional-changelog": "^3.3.0",
+    "standard-version": "^9.0.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
