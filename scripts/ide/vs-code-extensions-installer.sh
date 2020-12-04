@@ -3,6 +3,7 @@
 
 code --install-extension alexkrechik.cucumberautocomplete
 code --install-extension ChakrounAnas.turbo-console-log
+code --install-extension christian-kohler.npm-intellisense
 code --install-extension christian-kohler.path-intellisense
 code --install-extension cmstead.jsrefactor
 code --install-extension CoenraadS.bracket-pair-colorizer
