@@ -5,6 +5,7 @@
 	"recommendations": [
 		"alexkrechik.cucumberautocomplete",
 		"ChakrounAnas.turbo-console-log",
+		"christian-kohler.npm-intellisense",
 		"christian-kohler.path-intellisense",
 		"cmstead.jsrefactor",
 		"CoenraadS.bracket-pair-colorizer",
