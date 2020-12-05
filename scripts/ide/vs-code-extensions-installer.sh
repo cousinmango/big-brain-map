@@ -52,14 +52,11 @@ code --install-extension msjsdiag.debugger-for-edge
 code --install-extension nhoizey.gremlins
 code --install-extension nicoespeon.abracadabra
 code --install-extension pflannery.vscode-versionlens
-# code --install-extension PKief.material-icon-theme
-# code --install-extension planbcoding.vscode-react-refactor
 code --install-extension quicktype.quicktype
 code --install-extension rbbit.typescript-hero
 code --install-extension redhat.vscode-xml
 code --install-extension redhat.vscode-yaml
 code --install-extension ritwickdey.LiveServer
-# code --install-extension run-at-scale.terraform-doc-snippets
 code --install-extension salbert.comment-ts
 code --install-extension sonarsource.sonarlint-vscode
 code --install-extension SimonTest.simontest
