@@ -20,6 +20,7 @@ BREAKING.feature.patch (major.minor.patch)
 
 # conventional commit helper tool. Run using cz in local repo or use npx cz
 # npm install -g commitizen
+npm install -g @commitlint/cli @commitlint/config-conventional
 
 # vs code extensions installer script
 ./scripts/ide/vs-code-extensions-installer.sh

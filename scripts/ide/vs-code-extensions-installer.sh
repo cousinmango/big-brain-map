@@ -2,10 +2,12 @@
 # Generated using `code --list-extensions | xargs -L 1 echo code --install-extension`
 
 code --install-extension alexkrechik.cucumberautocomplete
+code --install-extension adrianwilczynski.switcher
 code --install-extension ChakrounAnas.turbo-console-log
 code --install-extension christian-kohler.npm-intellisense
 code --install-extension christian-kohler.path-intellisense
 code --install-extension cmstead.jsrefactor
+code --install-extension codezombiech.gitignore
 code --install-extension CoenraadS.bracket-pair-colorizer
 code --install-extension CoenraadS.bracket-pair-colorizer-2
 code --install-extension cyrilletuzi.angular-schematics
@@ -37,14 +39,15 @@ code --install-extension ms-vscode.vscode-typescript-next
 code --install-extension ms-vsliveshare.vsliveshare
 code --install-extension msjsdiag.debugger-for-chrome
 code --install-extension msjsdiag.debugger-for-edge
-code --install-extension mtxr.sqltools
 code --install-extension nhoizey.gremlins
 code --install-extension nicoespeon.abracadabra
+code --install-extension pflannery.vscode-versionlens
 code --install-extension quicktype.quicktype
 code --install-extension rbbit.typescript-hero
 code --install-extension redhat.vscode-xml
 code --install-extension redhat.vscode-yaml
 code --install-extension salbert.comment-ts
+code --install-extension sonarsource.sonarlint-vscode
 code --install-extension steoates.autoimport
 code --install-extension stevejpurves.cucumber
 code --install-extension stringham.move-ts
