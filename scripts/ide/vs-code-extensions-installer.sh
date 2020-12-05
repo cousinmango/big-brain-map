@@ -1,16 +1,17 @@
 #!/bin/bash
 # Generated using `code --list-extensions | xargs -L 1 echo code --install-extension`
 
-code --install-extension alexkrechik.cucumberautocomplete
 code --install-extension adrianwilczynski.switcher
+code --install-extension aaron-bond.better-comments
+code --install-extension alexkrechik.cucumberautocomplete
+code --install-extension auchenberg.vscode-browser-preview
 code --install-extension ChakrounAnas.turbo-console-log
 code --install-extension christian-kohler.npm-intellisense
 code --install-extension christian-kohler.path-intellisense
 code --install-extension cmstead.jsrefactor
+code --install-extension CodeStream.codestream
 code --install-extension codezombiech.gitignore
-code --install-extension CoenraadS.bracket-pair-colorizer
 code --install-extension CoenraadS.bracket-pair-colorizer-2
-code --install-extension cyrilletuzi.angular-schematics
 code --install-extension DavidAnson.vscode-markdownlint
 code --install-extension dbaeumer.vscode-eslint
 code --install-extension donjayamanne.githistory
@@ -27,29 +28,47 @@ code --install-extension GitHub.vscode-pull-request-github
 code --install-extension GregorBiswanger.json2ts
 code --install-extension Gruntfuggly.todo-tree
 code --install-extension hbenl.vscode-test-explorer
+code --install-extension hbenl.vscode-test-explorer-liveshare
+code --install-extension johnpapa.angular-essentials
 code --install-extension johnpapa.vscode-peacock
 code --install-extension johnpapa.winteriscoming
+code --install-extension karigari.chat
 code --install-extension krizzdewizz.refactorix
+code --install-extension lostintangent.vsls-pomodoro
+code --install-extension lostintangent.vsls-whiteboard
 code --install-extension mehmetbsrn.test-generator
+code --install-extension ms-azuretools.vscode-docker
 code --install-extension ms-vscode-remote.remote-ssh
 code --install-extension ms-vscode-remote.remote-ssh-edit
 code --install-extension ms-vscode-remote.remote-wsl
 code --install-extension ms-vscode.typescript-javascript-grammar
 code --install-extension ms-vscode.vscode-typescript-next
+code --install-extension ms-vscode.vscode-typescript-tslint-plugin
 code --install-extension ms-vsliveshare.vsliveshare
+code --install-extension ms-vsliveshare.vsliveshare-audio
+code --install-extension ms-vsliveshare.vsliveshare-pack
 code --install-extension msjsdiag.debugger-for-chrome
 code --install-extension msjsdiag.debugger-for-edge
 code --install-extension nhoizey.gremlins
 code --install-extension nicoespeon.abracadabra
 code --install-extension pflannery.vscode-versionlens
+# code --install-extension PKief.material-icon-theme
+# code --install-extension planbcoding.vscode-react-refactor
 code --install-extension quicktype.quicktype
 code --install-extension rbbit.typescript-hero
 code --install-extension redhat.vscode-xml
 code --install-extension redhat.vscode-yaml
+code --install-extension ritwickdey.LiveServer
+# code --install-extension run-at-scale.terraform-doc-snippets
 code --install-extension salbert.comment-ts
 code --install-extension sonarsource.sonarlint-vscode
+code --install-extension SimonTest.simontest
+code --install-extension softwaredotcom.swdc-vscode
 code --install-extension steoates.autoimport
 code --install-extension stevejpurves.cucumber
+code --install-extension streetsidesoftware.code-spell-checker
 code --install-extension stringham.move-ts
+code --install-extension vsls-contrib.spaces
+code --install-extension WallabyJs.quokka-vscode
 code --install-extension xletohic.cucumber-json-formatter
 code --install-extension ypresto.vscode-intelli-refactor
