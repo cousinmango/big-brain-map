@@ -9,7 +9,7 @@
     "@commitlint/config-conventional": "^11.0.0",
     "@types/d3": "^6.2.0",
     "cz-conventional-changelog": "^3.3.0",
-    "husky": "^5.0.4",
+    "husky": "^4.3.0",
     "standard-version": "^9.0.0"
   },
   "scripts": {
