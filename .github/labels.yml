@@ -17,7 +17,7 @@
 - name: ":white_check_mark: tests"
   color: "77e856"
   description: "Add or update tests"
-- name: ":package: dependecies"
+- name: ":package: dependencies"
   color: "fdd0ae"
   description: "Update dependencies :alien:"
 - name: "duplicate"
