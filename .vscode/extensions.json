@@ -2,6 +2,9 @@
 	// See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
 	// Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
 	// List of extensions which should be recommended for users of this workspace.
+
+	// Generated using `code --list-extensions`
+	// See scripts/vs-code-extensions-installer.sh
 	"recommendations": [
 		"adrianwilczynski.switcher",
 		"alexkrechik.cucumberautocomplete",
@@ -39,6 +42,7 @@
 		"ms-vscode.typescript-javascript-grammar",
 		"ms-vscode.vscode-typescript-next",
 		"ms-vsliveshare.vsliveshare",
+		"ms-vsliveshare.vsliveshare-pack",
 		"msjsdiag.debugger-for-chrome",
 		"msjsdiag.debugger-for-edge",
 		"nhoizey.gremlins",
@@ -48,6 +52,7 @@
 		"rbbit.typescript-hero",
 		"redhat.vscode-xml",
 		"redhat.vscode-yaml",
+		"ritwickdey.liveserver",
 		"salbert.comment-ts",
 		"sonarsource.sonarlint-vscode",
 		"steoates.autoimport",
