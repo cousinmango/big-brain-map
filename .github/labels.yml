@@ -25,7 +25,6 @@
   description: "This issue or pull request already exists"
 - name: "enhancement"
   color: "a22eef"
-- name: "wontfix_it"
+- name: "wontfix"
   color: "000000"
   description: "This will not be worked on"
-  from_name: "wontfix"
