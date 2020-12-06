@@ -5,5 +5,8 @@
     "cSpell.words": [
         "commitlint",
         "cousinmango"
-    ]
+    ],
+    "prettier.htmlWhitespaceSensitivity": "ignore",
+    "dotnet.enableTelemetry": false,
+    "dotnet-test-explorer.enableTelemetry": false
 }
