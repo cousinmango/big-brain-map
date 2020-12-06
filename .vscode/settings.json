@@ -1,0 +1,9 @@
+{
+    "telemetry.enableTelemetry": false,
+    "githubPullRequests.telemetry.enabled": false,
+    "telemetry.enableCrashReporter": false,
+    "cSpell.words": [
+        "commitlint",
+        "cousinmango"
+    ]
+}
