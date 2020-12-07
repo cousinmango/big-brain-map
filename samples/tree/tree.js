@@ -1,7 +1,11 @@
+async function getTreeData(dataPath = "./seed/tree-data.json") {
+    const responseData = fetch(dataPath).then(response => response.json());
+    const jsonData = responseData;
 
-import { treeData } from "./seed/tree-data.json"
+    return jsonData
+}
 
-
+function doTheTree(treeData) {
     // set the dimensions and margins of the diagram
     const margin = { top: 20, right: 90, bottom: 30, left: 90 },
         width = 660 - margin.left - margin.right,
@@ -74,5 +78,13 @@ import { treeData } from "./seed/tree-data.json"
         .attr("y", d => d.children && d.depth !== 0 ? -(d.data.value + 5) : d)
         .style("text-anchor", d => d.children ? "end" : "start")
         .text(d => d.data.name);
+}
 
+getTreeData()
+    .then(doTheTree)
+    .catch(
+        reason =>
+            console.debug(`${reason} Something went horribly wrong`)
+    )
+    ;
 
