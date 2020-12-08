@@ -1,7 +1,7 @@
 
 /**
  * 
- * @param {*} dataPath 
+ * @param {string} dataPath 
  */
 async function getData(dataPath = "./seed/miserables.json") {
     const responseData = fetch(dataPath).then(response => response.json());
@@ -12,8 +12,7 @@ async function getData(dataPath = "./seed/miserables.json") {
 
 /**
  * 
- * @param {d3.Simulation<d3.SimulationNodeDatum>
-} simulation 
+ * @param {d3.Simulation<d3.SimulationNodeDatum>} simulation 
  */
 function drag(simulation) {
 
@@ -43,6 +42,10 @@ function drag(simulation) {
 const height = window.innerHeight;
 const width = window.innerWidth;
 
+/**
+ * Scales the data node .group value into arbitrary hexadecimal strings (for colour values)
+ * e.g 1 = #00000 2 = #1f1f1f 10 = #ffffff
+ */
 function color() {
     const scale = d3.scaleOrdinal(d3.schemeCategory10);
     return d => scale(d.group);
@@ -53,13 +56,17 @@ function chart(data) {
     const nodes = data.nodes.map(d => Object.create(d));
 
     const simulation = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).id(d => d.id))
-        .force("charge", d3.forceManyBody())
+        .force("link", d3.forceLink(links).id(d => d.id).distance(1))
+        .force("charge", d3.forceManyBody().strength(-500))
         .force("center", d3.forceCenter(width / 2, height / 2));
 
     const svg = d3
-    .select("body")
-    .append("svg")
+        /*
+            Remember to append the generated svg onto a page element
+            (observablehq notebook depends cells and other auto-handling for visualisation)
+        */
+        .select("body")
+        .append("svg")
         .attr("viewBox", [0, 0, width, height]);
 
     const link = svg.append("g")
@@ -76,7 +83,7 @@ function chart(data) {
         .selectAll("circle")
         .data(nodes)
         .join("circle")
-        .attr("r", 5)
+        .attr("r", 25)
         .attr("fill", color())
         .call(drag(simulation));
 
@@ -95,8 +102,10 @@ function chart(data) {
             .attr("cy", d => d.y);
     });
 
-    /* 
-      main.variable(observer("chart")).define("chart", ["data","d3","width","height","color","drag","invalidation"]
+    /*
+        - NOTE: Some of there are observablehq-only definitions.
+        Invalidation is for cell resource disposal (not relevant outside the observablehq notebook) 
+        main.variable(observer("chart")).define("chart", ["data","d3","width","height","color","drag","invalidation"]
     */
     // invalidation.then(() => simulation.stop());
 
