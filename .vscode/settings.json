@@ -8,5 +8,7 @@
     ],
     "prettier.htmlWhitespaceSensitivity": "ignore",
     "dotnet.enableTelemetry": false,
-    "dotnet-test-explorer.enableTelemetry": false
+    "dotnet-test-explorer.enableTelemetry": false,
+    "liveshare.allowGuestDebugControl": true,
+    "liveshare.languages.allowGuestCommandControl": true
 }
