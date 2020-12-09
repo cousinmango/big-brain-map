@@ -1,14 +1,12 @@
 {
-    "telemetry.enableTelemetry": false,
-    "githubPullRequests.telemetry.enabled": false,
-    "telemetry.enableCrashReporter": false,
-    "cSpell.words": [
-        "commitlint",
-        "cousinmango"
-    ],
-    "prettier.htmlWhitespaceSensitivity": "ignore",
-    "dotnet.enableTelemetry": false,
-    "dotnet-test-explorer.enableTelemetry": false,
-    "liveshare.allowGuestDebugControl": true,
-    "liveshare.languages.allowGuestCommandControl": true
+  "telemetry.enableTelemetry": false,
+  "githubPullRequests.telemetry.enabled": false,
+  "telemetry.enableCrashReporter": false,
+  "cSpell.words": ["commitlint", "cousinmango"],
+  "prettier.htmlWhitespaceSensitivity": "ignore",
+  "dotnet.enableTelemetry": false,
+  "dotnet-test-explorer.enableTelemetry": false,
+  "liveshare.allowGuestDebugControl": true,
+  "liveshare.languages.allowGuestCommandControl": true,
+  "editor.tabSize": 2
 }
