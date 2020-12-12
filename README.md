@@ -1,4 +1,4 @@
-# bigbrainmap
+# big-brain-map
 
 From sample repo:
 
