@@ -69,14 +69,15 @@ function chart(data) {
 
   const svg = d3
     /*
-            Remember to append the generated svg onto a page element
-            (observablehq notebook depends cells and other auto-handling for visualisation)
-        */
+    Remember to append the generated svg onto a page element
+    (observablehq notebook depends cells and other auto-handling for visualisation)
+    */
     .select("body")
     .append("svg")
     .attr("viewBox", [0, 0, width, height]);
+  const g = svg.append("g");
 
-  const link = svg
+  const link = g
     .append("g")
     .attr("stroke", "#999")
     .attr("stroke-opacity", 0.6)
@@ -85,7 +86,7 @@ function chart(data) {
     .join("line")
     .attr("stroke-width", (d) => Math.sqrt(d.value));
 
-  const node = svg
+  const node = g
     .append("g")
     .attr("stroke", "#fff")
     .attr("stroke-width", 1.5)
@@ -96,7 +97,7 @@ function chart(data) {
     .attr("fill", color())
     .call(drag(simulation));
 
-  const label = svg
+  const label = g
     .append("g")
     .selectAll("text")
     .data(nodes)
@@ -107,6 +108,15 @@ function chart(data) {
     .call(drag(simulation));
 
   node.append("title").text((d) => d.id);
+
+  svg.call(d3.zoom()
+    .extent([[0, 0], [width, height]])
+    .scaleExtent([1, 8])
+    .on("zoom", zoomed));
+
+  function zoomed({ transform }) {
+    g.attr("transform", transform);
+  }
 
   simulation.on("tick", () => {
     link
