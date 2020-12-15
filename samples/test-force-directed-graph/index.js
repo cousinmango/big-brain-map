@@ -51,6 +51,11 @@ function color() {
   return (d) => scale(d.group);
 }
 
+
+function zoomed({ transform }) {
+  g.attr("transform", transform);
+}
+
 function chart(data) {
   const links = data.links.map((d) => Object.create(d));
   const nodes = data.nodes.map((d) => Object.create(d));
@@ -67,14 +72,15 @@ function chart(data) {
     .force("charge", d3.forceManyBody().strength(-500))
     .force("center", d3.forceCenter(width / 2, height / 2));
 
-  const svg = d3
-    /*
+  /*
     Remember to append the generated svg onto a page element
-    (observablehq notebook depends cells and other auto-handling for visualisation)
-    */
+    (Observable HQ notebook depends cells and other auto-handling for visualisation)
+  */
+  const svg = d3
     .select("body")
     .append("svg")
     .attr("viewBox", [0, 0, width, height]);
+
   const g = svg.append("g");
 
   const link = g
@@ -114,10 +120,6 @@ function chart(data) {
     .scaleExtent([1, 8])
     .on("zoom", zoomed));
 
-  function zoomed({ transform }) {
-    g.attr("transform", transform);
-  }
-
   simulation.on("tick", () => {
     link
       .attr("x1", (d) => d.source.x)
@@ -129,16 +131,9 @@ function chart(data) {
     label.attr("x", (d) => d.x).attr("y", (d) => d.y);
   });
 
-  /*
-        - NOTE: Some of there are observablehq-only definitions.
-        Invalidation is for cell resource disposal (not relevant outside the observablehq notebook) 
-        main.variable(observer("chart")).define("chart", ["data","d3","width","height","color","drag","invalidation"]
-    */
-  // invalidation.then(() => simulation.stop());
-
   return svg.node();
 }
 
 getData()
   .then(chart)
-  .catch((reason) => console.error(`${reason}: Something went horribly wrong`));
+  .catch((reason) => console.error(`Something went horribly wrong`, reason));
