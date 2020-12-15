@@ -52,13 +52,18 @@ function color() {
 }
 
 
-function zoomed({ transform }) {
+function zoomed(g, { transform }) {
   g.attr("transform", transform);
 }
 
 function chart(data) {
   const links = data.links.map((d) => Object.create(d));
   const nodes = data.nodes.map((d) => Object.create(d));
+
+  // Mutato potato
+  // Any number here as it is unused, overridden by the node-radius function
+  const collisionation = d3.forceCollide(0);
+  const raddddd = collisionation.radius(({ id }) => id.length * 5)
 
   const simulation = d3
     .forceSimulation(nodes)
@@ -68,9 +73,11 @@ function chart(data) {
         .forceLink(links)
         .id((d) => d.id)
         .distance(1)
+
     )
     .force("charge", d3.forceManyBody().strength(-500))
-    .force("center", d3.forceCenter(width / 2, height / 2));
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collisionForce", raddddd);
 
   /*
     Remember to append the generated svg onto a page element
@@ -99,7 +106,8 @@ function chart(data) {
     .selectAll("circle")
     .data(nodes)
     .join("circle")
-    .attr("r", 25)
+    .attr("id", (d) => d.id)
+    .attr("r", (d) => d.id.length * 4)
     .attr("fill", color())
     .call(drag(simulation));
 
@@ -111,14 +119,18 @@ function chart(data) {
     .text((d) => d.id)
     .attr("fill", "black")
     .attr("dy", "0em")
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "middle")
     .call(drag(simulation));
 
   node.append("title").text((d) => d.id);
 
+  const zoomie = (elementToTransform) => zoomed(g, elementToTransform)
+
   svg.call(d3.zoom()
     .extent([[0, 0], [width, height]])
-    .scaleExtent([1, 8])
-    .on("zoom", zoomed));
+    .scaleExtent([0.1, 8])
+    .on("zoom", zoomie));
 
   simulation.on("tick", () => {
     link

@@ -1,5 +1,7 @@
 {
   "nodes": [
+    {"id": "VeryLongNameVeryLongNameVeryLongName", "group": 1, "x": 100, "vy": 2},
+
     {"id": "Myriel", "group": 1},
     {"id": "Napoleon", "group": 1},
     {"id": "Mlle.Baptistine", "group": 1},
@@ -79,6 +81,7 @@
     {"id": "Mme.Hucheloup", "group": 8}
   ],
   "links": [
+    {"source": "VeryLongNameVeryLongNameVeryLongName", "target": "Myriel", "value": 10000},
     {"source": "Napoleon", "target": "Myriel", "value": 10000},
     {"source": "Mlle.Baptistine", "target": "Myriel", "value": 8},
     {"source": "Mme.Magloire", "target": "Myriel", "value": 10},
