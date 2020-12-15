@@ -106,7 +106,8 @@ function chart(data) {
     .selectAll("circle")
     .data(nodes)
     .join("circle")
-    .attr("r", 25)
+    .attr("id", (d) => d.id)
+    .attr("r", (d) => d.id.length * 4)
     .attr("fill", color())
     .call(drag(simulation));
 
@@ -118,6 +119,8 @@ function chart(data) {
     .text((d) => d.id)
     .attr("fill", "black")
     .attr("dy", "0em")
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "middle")
     .call(drag(simulation));
 
   node.append("title").text((d) => d.id);
