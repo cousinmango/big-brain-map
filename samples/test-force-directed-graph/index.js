@@ -60,6 +60,11 @@ function chart(data) {
   const links = data.links.map((d) => Object.create(d));
   const nodes = data.nodes.map((d) => Object.create(d));
 
+  // Mutato potato
+  // Any number here as it is unused, overridden by the node-radius function
+  const collisionation = d3.forceCollide(0);
+  const raddddd = collisionation.radius(({ id }) => id.length * 5)
+
   const simulation = d3
     .forceSimulation(nodes)
     .force(
@@ -68,9 +73,11 @@ function chart(data) {
         .forceLink(links)
         .id((d) => d.id)
         .distance(1)
+
     )
     .force("charge", d3.forceManyBody().strength(-500))
-    .force("center", d3.forceCenter(width / 2, height / 2));
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collisionForce", raddddd);
 
   /*
     Remember to append the generated svg onto a page element
