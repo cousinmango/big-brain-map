@@ -52,7 +52,7 @@ function color() {
 }
 
 
-function zoomed({ transform }) {
+function zoomed(g, { transform }) {
   g.attr("transform", transform);
 }
 
@@ -115,10 +115,12 @@ function chart(data) {
 
   node.append("title").text((d) => d.id);
 
+  const zoomie = (elementToTransform) => zoomed(g, elementToTransform)
+
   svg.call(d3.zoom()
     .extent([[0, 0], [width, height]])
-    .scaleExtent([1, 8])
-    .on("zoom", zoomed));
+    .scaleExtent([0.1, 8])
+    .on("zoom", zoomie));
 
   simulation.on("tick", () => {
     link
