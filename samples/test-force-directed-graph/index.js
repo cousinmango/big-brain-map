@@ -51,9 +51,19 @@ function color() {
   return (d) => scale(d.group);
 }
 
+
+function zoomed(g, { transform }) {
+  g.attr("transform", transform);
+}
+
 function chart(data) {
   const links = data.links.map((d) => Object.create(d));
   const nodes = data.nodes.map((d) => Object.create(d));
+
+  // Mutato potato
+  // Any number here as it is unused, overridden by the node-radius function
+  const collisionation = d3.forceCollide(0);
+  const raddddd = collisionation.radius(({ id }) => id.length * 5)
 
   const simulation = d3
     .forceSimulation(nodes)
@@ -63,20 +73,24 @@ function chart(data) {
         .forceLink(links)
         .id((d) => d.id)
         .distance(1)
+
     )
     .force("charge", d3.forceManyBody().strength(-500))
-    .force("center", d3.forceCenter(width / 2, height / 2));
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collisionForce", raddddd);
 
+  /*
+    Remember to append the generated svg onto a page element
+    (Observable HQ notebook depends cells and other auto-handling for visualisation)
+  */
   const svg = d3
-    /*
-            Remember to append the generated svg onto a page element
-            (observablehq notebook depends cells and other auto-handling for visualisation)
-        */
     .select("body")
     .append("svg")
     .attr("viewBox", [0, 0, width, height]);
 
-  const link = svg
+  const g = svg.append("g");
+
+  const link = g
     .append("g")
     .attr("stroke", "#999")
     .attr("stroke-opacity", 0.6)
@@ -85,18 +99,19 @@ function chart(data) {
     .join("line")
     .attr("stroke-width", (d) => Math.sqrt(d.value));
 
-  const node = svg
+  const node = g
     .append("g")
     .attr("stroke", "#fff")
     .attr("stroke-width", 1.5)
     .selectAll("circle")
     .data(nodes)
     .join("circle")
-    .attr("r", 25)
+    .attr("id", (d) => d.id)
+    .attr("r", (d) => d.id.length * 4)
     .attr("fill", color())
     .call(drag(simulation));
 
-  const label = svg
+  const label = g
     .append("g")
     .selectAll("text")
     .data(nodes)
@@ -104,9 +119,18 @@ function chart(data) {
     .text((d) => d.id)
     .attr("fill", "black")
     .attr("dy", "0em")
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "middle")
     .call(drag(simulation));
 
   node.append("title").text((d) => d.id);
+
+  const zoomie = (elementToTransform) => zoomed(g, elementToTransform)
+
+  svg.call(d3.zoom()
+    .extent([[0, 0], [width, height]])
+    .scaleExtent([0.1, 8])
+    .on("zoom", zoomie));
 
   simulation.on("tick", () => {
     link
@@ -119,16 +143,9 @@ function chart(data) {
     label.attr("x", (d) => d.x).attr("y", (d) => d.y);
   });
 
-  /*
-        - NOTE: Some of there are observablehq-only definitions.
-        Invalidation is for cell resource disposal (not relevant outside the observablehq notebook) 
-        main.variable(observer("chart")).define("chart", ["data","d3","width","height","color","drag","invalidation"]
-    */
-  // invalidation.then(() => simulation.stop());
-
   return svg.node();
 }
 
 getData()
   .then(chart)
-  .catch((reason) => console.error(`${reason}: Something went horribly wrong`));
+  .catch((reason) => console.error(`Something went horribly wrong`, reason));
