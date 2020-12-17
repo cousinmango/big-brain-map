@@ -10,6 +10,7 @@
     "@types/d3": "^6.2.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.15.0",
+    "eslint-config-google": "^0.14.0",
     "husky": "^4.3.0",
     "standard-version": "^9.0.0"
   },
