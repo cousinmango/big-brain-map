@@ -1,4 +1,8 @@
-module.exports = {
+
+/**
+ * @type {import("eslint").Linter.Config}
+ */
+const config = {
   env: {
     browser: true,
     es2021: true,
@@ -28,5 +32,8 @@ module.exports = {
       "error",
       { functions: false, classes: false, variables: true },
     ],
+    
   },
 };
+
+module.exports = config;
