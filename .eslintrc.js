@@ -7,7 +7,7 @@ const config = {
     browser: true,
     es2021: true,
   },
-  extends: "eslint:recommended",
+  extends: ["eslint:recommended", "google"],
   parserOptions: {
     ecmaVersion: 12,
     amd: true,
@@ -32,7 +32,8 @@ const config = {
       "error",
       { functions: false, classes: false, variables: true },
     ],
-    
+    strict: ["error", "global"]
+
   },
 };
 
