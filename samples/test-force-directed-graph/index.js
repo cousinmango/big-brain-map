@@ -109,7 +109,8 @@ function chart(data) {
     .attr("id", (d) => d.id)
     .attr("r", (d) => d.id.length * 4)
     .attr("fill", color())
-    .call(drag(simulation));
+    .call(drag(simulation))
+    .on("click", clicked);
 
   const label = g
     .append("g")
@@ -127,10 +128,13 @@ function chart(data) {
 
   const zoomie = (elementToTransform) => zoomed(g, elementToTransform)
 
-  svg.call(d3.zoom()
+  const zoom = d3.zoom()
     .extent([[0, 0], [width, height]])
     .scaleExtent([0.1, 8])
-    .on("zoom", zoomie));
+    .on("zoom", zoomie);
+
+  // allow free zooming/panning
+  svg.call(zoom);
 
   simulation.on("tick", () => {
     link
@@ -142,6 +146,15 @@ function chart(data) {
     node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
     label.attr("x", (d) => d.x).attr("y", (d) => d.y);
   });
+
+  function clicked(event, d) {
+    console.log(`clicked: ${d3.select(`#${d.id}`).attr("id")}`); // TODO: broken if id contains a dot
+    const translate = [width / 2, height / 2];
+
+    svg.transition()
+      .duration(750)
+      .call(zoom.transform, d3.zoomIdentity.translate(translate[0] - d3.select(`#${d.id}`).attr("cx"), translate[1] - d3.select(`#${d.id}`).attr("cy"))); // updated for d3 v4
+  }
 
   return svg.node();
 }
