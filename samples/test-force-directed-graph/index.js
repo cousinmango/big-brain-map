@@ -1,3 +1,8 @@
+/* global d3 */
+
+
+"use strict";
+
 /**
  *
  * @param {string} dataPath
@@ -14,19 +19,32 @@ async function getData(dataPath = "./seed/miserables.json") {
 /**
  *
  * @param {d3.Simulation<d3.SimulationNodeDatum>} simulation
+ * @return {d3.DragBehavior<Element, any, any>} drag configuration
  */
-function drag(simulation) {
+function getDragBehaviour(simulation) {
+  /**
+   *
+   * @param {MouseEvent} event
+   */
   function dragStarted(event) {
     if (!event.active) simulation.alphaTarget(0.3).restart();
     event.subject.fx = event.subject.x;
     event.subject.fy = event.subject.y;
   }
 
+  /**
+   *
+   * @param {MouseEvent} event
+   */
   function dragged(event) {
     event.subject.fx = event.x;
     event.subject.fy = event.y;
   }
 
+  /**
+   *
+   * @param {MouseEvent} event
+   */
   function dragEnded(event) {
     if (!event.active) simulation.alphaTarget(0);
     event.subject.fx = null;
@@ -43,19 +61,43 @@ function drag(simulation) {
 const height = window.innerHeight;
 const width = window.innerWidth;
 /**
- * Scales the data node .group value into arbitrary hexadecimal strings (for colour values)
+ * Scales the data node .group value into arbitrary hexadecimal strings 
+ * (for colour values)
  * e.g 1 = #00000 2 = #1f1f1f 10 = #ffffff
+ * @return {d3.ValueFn<
+ * Element | Window | Document | d3.EnterElement | SVGCircleElement,
+ * any,
+ * string | number | boolean
+ * >}
  */
 function color() {
+  // An array of ten categorical colors represented as RGB hexadecimal strings.
   const scale = d3.scaleOrdinal(d3.schemeCategory10);
+
   return (d) => scale(d.group);
 }
 
 
-function zoomed(g, { transform }) {
-  g.attr("transform", transform);
+/**
+ * Does something to the selection using 
+ * (should be triggered on the zoom event)
+ * @param {d3.Selection<
+ *  SVGSVGElement, any, HTMLElement, any
+ *  >} gSelection overall viewbox group
+ * @param {Element} elementToTransform hmm
+ * @param {d3.ValueFn<GElement, Datum, string | number | boolean>} param1 not
+ *  sure what this is yet.
+ */
+function zoomed(gSelection, { transform }) {
+  gSelection.attr("transform", transform);
 }
 
+/**
+ * Do the chart!
+ * @param {*} data give the fetched json data ez plug in for flat webpage
+ *
+ * @return {SVGSVGElement} This is a weird element.
+ */
 function chart(data) {
   const links = data.links.map((d) => Object.create(d));
   const nodes = data.nodes.map((d) => Object.create(d));
@@ -81,7 +123,10 @@ function chart(data) {
 
   /*
     Remember to append the generated svg onto a page element
-    (Observable HQ notebook depends cells and other auto-handling for visualisation)
+    (
+      Observable HQ notebook depends cells and other auto-handling for
+      visualisation
+    )
   */
   const svg = d3
     .select("body")
@@ -109,8 +154,7 @@ function chart(data) {
     .attr("id", (d) => d.id)
     .attr("r", (d) => d.id.length * 4)
     .attr("fill", color())
-    .call(drag(simulation))
-    .on("click", clicked);
+    .call(getDragBehaviour(simulation));
 
   const label = g
     .append("g")
@@ -122,19 +166,30 @@ function chart(data) {
     .attr("dy", "0em")
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "middle")
-    .call(drag(simulation));
+    .call(getDragBehaviour(simulation));
 
   node.append("title").text((d) => d.id);
 
-  const zoomie = (elementToTransform) => zoomed(g, elementToTransform)
 
-  const zoom = d3.zoom()
+  /**
+   * Do something on the zoom event
+   * @param {Element} elementToTransform element to attr
+   * @param {Event} event uhh
+   * @param {Datum} d d3 datum?
+   * @return {void} not sure
+   */
+  const zoomie = (elementToTransform) => zoomed(g, elementToTransform);
+
+  /**
+   * @type {d3.ZoomBehavior<Element, any>}
+   */
+  const zoomBehaviour = svg.call(d3.zoom()
     .extent([[0, 0], [width, height]])
     .scaleExtent([0.1, 8])
-    .on("zoom", zoomie);
+    // "start", "zoom", "end"
+    .on("zoom", zoomie));
 
-  // allow free zooming/panning
-  svg.call(zoom);
+  zoomBehaviour;
 
   simulation.on("tick", () => {
     link
