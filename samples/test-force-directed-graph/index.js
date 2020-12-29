@@ -1,11 +1,15 @@
+/*
+- FIXME: Remember to enable this later 
+// @ts-check
+*/
 /* global d3 */
-
 
 "use strict";
 
 /**
  *
  * @param {string} dataPath
+ * @return {MiserableNodesLinks}
  */
 async function getData(dataPath = "./seed/miserables.json") {
   const responseData = fetch(dataPath).then((response) => response.json());
@@ -215,7 +219,7 @@ function chart(data) {
      */
     const escapedID = '#' + CSS.escape(d.id);
 
-    console.log(`clicked: ${d3.select(escapedID).attr("id")}`); // TODO: broken if id contains a dot
+    console.log(`clicked: ${d3.select(escapedID).attr("id")}`);
     const translate = [width / 2, height / 2];
 
     svg.transition()
@@ -237,6 +241,163 @@ function chart(data) {
   return svg.node();
 }
 
+
+/**
+ * Node definition
+ * @example {id: 1, group: 1}
+ * 
+ * - TODO: Move these to another file and use some jsdoc comments to find the path resolution of type???? or make a @types file
+ * Nodes positions are defined dynamically through physic simulation downstream with relation to link strength
+ */
+class HappyNode {
+  /**
+   * @member
+   * @type {string} 
+   * naive key
+   * 
+   * The name of the node
+   * Also should be unique
+   * This will break if someone wants to add another node 
+   * 
+   * - TODO: This should eventually be migrated to a standard unique ID integer or UUID
+   */
+  id;
+
+  /**
+   * @type {number} 
+   * 
+   * Group number
+   *  Also being used as naive key
+   *  Colour groupings
+   */
+  group;
+}
+
+/**
+ * Link definition for plotting D3 strokes
+ * The positive strength of `value` determines how nodes are positioned in relation to each other
+ * when warmed up in the physics simulation
+ * 
+ */
+class HappyLink {
+    /**
+     * The id name of the linked source node
+     * @member
+     * @type {string}
+     **/
+    source;
+    /**
+     * The target that the source is linked to
+     * @member {string}
+     * @type {string}
+     */
+    target;
+
+    /**
+     * The strength of the relationship.
+     * @member {number}
+     * @type {number} 
+     * 
+     */
+    value;
+}
+/** @type {HappyNode} */
+
+class MiserableNodesLinks {
+  
+  /**
+   * @member {number}
+   */
+
+  /**
+   * constructor description
+   * @param  {[number} config [description]
+   */
+  constructor(config) {
+    // class members. Should be private. 
+    /** @private 
+     * @type {number}
+     **/
+    this.nodes = config;
+    /** @private */
+    this.links = "bananas";
+  }
+}
+/**
+ * @param {{
+ *  nodes: [
+ *    {
+ *      id: string,
+ *      group: string
+ *    }
+ *  ],
+ *  links: [
+ *    {
+ *      source: string,
+ *      target: string,
+ *      value: string,   
+ *    }
+ *  ]
+ * }} theMiserableDataNodesLinks Assumed not undefined null
+ * 
+ * @param {HappyNode} newNode
+ * @param {HappyLink} newLink
+ * 
+ * @return {{
+ *  nodes: [
+  *    {
+  *      id: string,
+  *      group: string
+  *    }
+  *  ],
+  *  links: [
+  *    {
+  *      source: string,
+  *      target: string,
+  *      value: string,   
+  *    }
+  *  ]
+  * }} the new object with nodes array and links array properties
+ */
+function addSomeJsonNode(theMiserableDataNodesLinks, newNode, newLink) {
+  theMiserableDataNodesLinks.nodes.push(newNode);
+  theMiserableDataNodesLinks.links.push(newLink);
+  
+  return theMiserableDataNodesLinks;
+}
+
+
+
+/** @type {HappyNode} */
+const newNode = {id: "id", group: 1};
+/** @type {HappyLink} */
+const newLink = {source: "Combeferre", target: "id", value: 1000};
+
 getData()
+  .then((data) => addSomeJsonNode(data, newNode, newLink))
   .then(chart)
   .catch((reason) => console.error(`Something went horribly wrong`, reason));
+
+
+/* 
+  var mutableCounterOhNo = 1;
+
+  const recurseThisForeverTestAddStuffChart = setInterval(() => {
+    getData()
+    .then((data) => { 
+
+      const someNumberOfElementsToDoThings = Array.from({length: mutableCounterOhNo});
+
+      someNumberOfElementsToDoThings.forEach(() => addSomeJsonNode(data, newNode, newLink));
+
+
+      mutableCounterOhNo += 1;
+
+      return data;
+    })
+    .then(chart)
+    .catch((reason) => console.error(`Something went horribly wrong`, reason));
+  },
+  2000
+  )
+*/
