@@ -374,9 +374,14 @@ function chart(data: MiserableNodesLinks): SVGSVGElement {
   svg.call(getSuperZoomScrollBehaviour(svgContainerGroupG));
 
   simulation.on('tick', () => {
-    type ReallyBadTypeAliasSelectionCoerceDatumType = Selection<Element | Window | Document | EnterElement | SVGLineElement | null, HappyLink & {
-      source: SimulationNodeDatum;
-    }, SVGGElement, unknown>;
+    type ReallyBadTypeAliasSelectionCoerceDatumType = Selection<
+      Element | Window | Document | EnterElement | SVGLineElement | null,
+      HappyLink & {
+        source: SimulationNodeDatum;
+      },
+      SVGGElement,
+      unknown
+    >;
 
     (link as ReallyBadTypeAliasSelectionCoerceDatumType)
       /* overlapping keys break things */
