@@ -1,6 +1,7 @@
-/*
-- FIXME: Remember to enable this later 
 // @ts-check
+
+/*
+- FIXME: Remember to enable this later
 */
 /* global d3 */
 
@@ -9,7 +10,7 @@
 /**
  *
  * @param {string} dataPath
- * @return {MiserableNodesLinks}
+ * @return {Promise<MiserableNodesLinks>}
  */
 async function getData(dataPath = "./seed/miserables.json") {
   const responseData = fetch(dataPath).then((response) => response.json());
@@ -20,15 +21,22 @@ async function getData(dataPath = "./seed/miserables.json") {
 
 /* eslint no-undef: ["error"] */
 
+// eslint-disable-next-line valid-jsdoc
 /**
  *
  * @param {d3.Simulation<d3.SimulationNodeDatum>} simulation
- * @return {d3.DragBehavior<Element, any, any>} drag configuration
+ * @return {d3.DragBehavior<
+ *  Element | Window | Document | import("d3").EnterElement | SVGCircleElement,
+ *  any,
+ *  any
+ * >
+ * }
  */
 function getDragBehaviour(simulation) {
+  // eslint-disable-next-line valid-jsdoc
   /**
-   *
-   * @param {MouseEvent} event
+   * a
+   * @param {import("d3").D3DragEvent} event a
    */
   function dragStarted(event) {
     if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -36,18 +44,20 @@ function getDragBehaviour(simulation) {
     event.subject.fy = event.subject.y;
   }
 
+  // eslint-disable-next-line valid-jsdoc
   /**
    *
-   * @param {MouseEvent} event
+   * @param {import("d3").D3DragEvent} event
    */
   function dragged(event) {
     event.subject.fx = event.x;
     event.subject.fy = event.y;
   }
 
+  // eslint-disable-next-line valid-jsdoc
   /**
    *
-   * @param {MouseEvent} event
+   * @param {import("d3").D3DragEvent} event
    */
   function dragEnded(event) {
     if (!event.active) simulation.alphaTarget(0);
@@ -55,6 +65,9 @@ function getDragBehaviour(simulation) {
     event.subject.fy = null;
   }
 
+  // It works
+  // - FIXME: This works but clashes with d3 typing expected svg.call return
+  // @ts-ignore
   return d3
     .drag()
     .on("start", dragStarted)
@@ -65,7 +78,7 @@ function getDragBehaviour(simulation) {
 const height = window.innerHeight;
 const width = window.innerWidth;
 /**
- * Scales the data node .group value into arbitrary hexadecimal strings 
+ * Scales the data node .group value into arbitrary hexadecimal strings
  * (for colour values)
  * e.g 1 = #00000 2 = #1f1f1f 10 = #ffffff
  * @return {d3.ValueFn<
@@ -82,19 +95,138 @@ function color() {
 }
 
 
+// eslint-disable-next-line valid-jsdoc
 /**
- * Does something to the selection using 
+ * Does something to the selection using
  * (should be triggered on the zoom event)
  * @param {d3.Selection<
- *  SVGSVGElement, any, HTMLElement, any
+ *  SVGGElement, any, HTMLElement, any
  *  >} gSelection overall viewbox group
- * @param {Element} elementToTransform hmm
- * @param {d3.ValueFn<GElement, Datum, string | number | boolean>} param1 not
- *  sure what this is yet.
+ * @param {import("d3").D3ZoomEvent} zoomEvent hmm
  */
-function zoomed(gSelection, { transform }) {
-  gSelection.attr("transform", transform);
+function zoomed(gSelection, zoomEvent) {
+  const { transform } = zoomEvent;
+
+  gSelection.attr("transform", transform.toString());
 }
+
+/**
+ * Gets zoom behaviour?
+ * Sets limits
+ * @param {d3.Selection<
+  *  SVGGElement, any, HTMLElement, any
+  * >
+  * } selectionToZoomRescale
+  * @return {d3.ZoomBehavior<Element, any>}
+  */
+function getSuperZoomScrollBehaviour(selectionToZoomRescale) {
+  return d3.zoom()
+    .extent([[0, 0], [width, height]])
+    .scaleExtent([0.1, 8])
+    // "start", "zoom", "end"
+    .on("zoom", (zoomEvent) => zoomed(selectionToZoomRescale, zoomEvent));
+}
+
+// eslint-disable-next-line valid-jsdoc
+/**
+  *
+  * @param {*} links
+  * @return {d3.ForceLink<
+  *   any,
+  *   d3.SimulationLinkDatum<
+  *     d3.SimulationNodeDatum & HappyNode
+  *   >
+  * >} force link for simulation
+  */
+function useTheForceOnNodeLink(links) {
+  // eslint-disable-next-line valid-jsdoc
+  /**
+   *
+   * @return {d3.ForceLink<
+   *  d3.SimulationNodeDatum & HappyNode,
+   *  d3.SimulationLinkDatum<
+   *    d3.SimulationNodeDatum & HappyNode
+   *  >
+   * >} z
+   */
+  function getForceLinkHappyNode() {
+    return d3
+      .forceLink(links);
+  }
+
+
+  // eslint-disable-next-line valid-jsdoc
+  /**
+   *
+   * @param {() =>
+   *  d3.ForceLink<
+   *    d3.SimulationNodeDatum & HappyNode,
+   *    d3.SimulationLinkDatum<d3.SimulationNodeDatum & HappyNode
+   *  >
+   * >} zz
+   * @return {d3.ForceLink<
+    *  any,
+    *  d3.SimulationLinkDatum<
+    *    d3.SimulationNodeDatum & HappyNode
+    *  >
+    * >}
+   */
+  function extractedFnForJsDocCustomDataModel(zz = getForceLinkHappyNode) {
+    return zz()
+      .id((d) => d.id);
+  }
+
+  /*
+   d3
+   .forceLink(links)
+   .id((d) => d.id)
+   .distance(1);
+   */
+  return extractedFnForJsDocCustomDataModel(getForceLinkHappyNode)
+    .distance(1);
+}
+
+
+// eslint-disable-next-line valid-jsdoc
+/**
+ *
+ * @param {(d3.SimulationNodeDatum & HappyNode)} collisionNode
+ * @param {number} i
+ * @param {(d3.SimulationNodeDatum & HappyNode)[]} collisionNodes
+ *
+ *
+ */
+function getCollisionFactorHappyNode(collisionNode, i, collisionNodes) {
+  const { id } = collisionNode;
+
+  return id.length * 5;
+}
+/**
+ *
+ * @type {(node: (d3.SimulationNodeDatum & HappyNode),
+ * i: number,
+ * nodes: (d3.SimulationNodeDatum & HappyNode)[]) => number}
+ */
+const unusedVar = getCollisionFactorHappyNode;
+unusedVar;
+// eslint-disable-next-line valid-jsdoc
+/**
+ * To enforce compile-time JSDoc types for custom node data model.
+ *
+ * Works in runtime anyway.
+ *
+ * @param {d3.ForceCollide<d3.SimulationNodeDatum & HappyNode>} collisionation
+ * @return {d3.ForceCollide<d3.SimulationNodeDatum & HappyNode>}
+ */
+function getForceCollideDatumModelCoerced(collisionation) {
+  return collisionation.radius(getCollisionFactorHappyNode);
+}
+
+/*
+--------------------------------------------------------------------------------
+--------------------- Big function below----------------------------------------
+--------------------------------------------------------------------------------
+*/
 
 /**
  * Do the chart!
@@ -108,17 +240,24 @@ function chart(data) {
 
   // Mutato potato
   // Any number here as it is unused, overridden by the node-radius function
-  const collisionation = d3.forceCollide(0);
-  const raddddd = collisionation.radius(({ id }) => id.length * 5)
+  /**
+   * @type {d3.ForceCollide<d3.SimulationNodeDatum & HappyNode>}
+   */
+  const nodeCollisionConfig = d3.forceCollide(0);
+
+
+  // eslint-disable-next-line valid-jsdoc
+
+  /**
+   *  @type {d3.ForceCollide<d3.SimulationNodeDatum & HappyNode>}
+   */
+  const raddddd = getForceCollideDatumModelCoerced(nodeCollisionConfig);
 
   const simulation = d3
     .forceSimulation(nodes)
     .force(
       "link",
-      d3
-        .forceLink(links)
-        .id((d) => d.id)
-        .distance(1)
+      useTheForceOnNodeLink(links),
 
     )
     .force("charge", d3.forceManyBody().strength(-500))
@@ -135,11 +274,11 @@ function chart(data) {
   const svg = d3
     .select("body")
     .append("svg")
-    .attr("viewBox", [0, 0, width, height]);
+    .attr("viewBox", `0 0 ${width} ${height}`);
 
-  const g = svg.append("g");
+  const svgContainerGroupG = svg.append("g");
 
-  const link = g
+  const link = svgContainerGroupG
     .append("g")
     .attr("stroke", "#999")
     .attr("stroke-opacity", 0.6)
@@ -148,7 +287,7 @@ function chart(data) {
     .join("line")
     .attr("stroke-width", (d) => Math.sqrt(d.value));
 
-  const node = g
+  const node = svgContainerGroupG
     .append("g")
     .attr("stroke", "#fff")
     .attr("stroke-width", 1.5)
@@ -158,10 +297,20 @@ function chart(data) {
     .attr("id", (d) => d.id)
     .attr("r", (d) => d.id.length * 4)
     .attr("fill", color())
-    .call(getDragBehaviour(simulation))
-    .on("click", clicked);
+    .call(
+      // - FIXME: This return is required
 
-  const label = g
+      getDragBehaviour(simulation),
+
+    )
+    .on("click", (event, d) => clicked(
+      event,
+      d,
+      getSuperZoomScrollBehaviour(svgContainerGroupG),
+    ));
+
+
+  const label = svgContainerGroupG
     .append("g")
     .selectAll("text")
     .data(nodes)
@@ -171,31 +320,16 @@ function chart(data) {
     .attr("dy", "0em")
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "middle")
-    .call(getDragBehaviour(simulation));
+    .call(
+      getDragBehaviour(simulation),
+    );
 
   node.append("title").text((d) => d.id);
 
 
-  /**
-   * Do something on the zoom event
-   * @param {Element} elementToTransform element to attr
-   * @param {Event} event uhh
-   * @param {Datum} d d3 datum?
-   * @return {void} not sure
-   */
-  const zoomie = (elementToTransform) => zoomed(g, elementToTransform);
-
-  /**
-   * @type {d3.ZoomBehavior<Element, any>}
-   */
-  const zoom = d3.zoom()
-    .extent([[0, 0], [width, height]])
-    .scaleExtent([0.1, 8])
-    // "start", "zoom", "end"
-    .on("zoom", zoomie);
-
   // allow free zooming/panning
-  svg.call(zoom);
+  // @ts-ignore
+  svg.call(getSuperZoomScrollBehaviour(svgContainerGroupG));
 
   simulation.on("tick", () => {
     link
@@ -208,16 +342,18 @@ function chart(data) {
     label.attr("x", (d) => d.x).attr("y", (d) => d.y);
   });
 
-  /**
-   * @param event
-   * @param d
-   */
-  function clicked(event, d) {
 
+  /**
+   *
+   * @param {*} event
+   * @param {*} d
+   * @param {*} theD3Zoom
+   */
+  function clicked(event, d, theD3Zoom) {
     /**
      * @type {string}
      */
-    const escapedID = '#' + CSS.escape(d.id);
+    const escapedID = `#${CSS.escape(d.id)}`;
 
     console.log(`clicked: ${d3.select(escapedID).attr("id")}`);
     const translate = [width / 2, height / 2];
@@ -225,153 +361,174 @@ function chart(data) {
     svg.transition()
       .duration(750)
       .call(
-        zoom.transform,
+        theD3Zoom.transform,
         d3.zoomIdentity.translate(
-          translate[0] -
-          d3.select(escapedID)
+          // Why are we subtracting a Selection object from a number
+          // @ts-ignore
+          translate[0] - d3.select(escapedID)
             .attr("cx")
           ,
-          translate[1] -
-          d3.select(escapedID)
-            .attr("cy")
-        )
+          // @ts-ignore
+          translate[1] - d3.select(escapedID)
+            .attr("cy"),
+        ),
       ); // updated for d3 v4
   }
 
   return svg.node();
 }
 
+/* eslint-disable no-unused-vars */
 
 /**
  * Node definition
  * @example {id: 1, group: 1}
- * 
- * - TODO: Move these to another file and use some jsdoc comments to find the path resolution of type???? or make a @types file
- * Nodes positions are defined dynamically through physic simulation downstream with relation to link strength
+ *
+ * - TODO: Move these to another file and use some jsdoc comments to find
+ * the path resolution of type???? or make a @types file
+ * Nodes positions are defined dynamically through physic simulation
+ * downstream with relation to link strength
  */
 class HappyNode {
   /**
+   *
+   * @param {string} id
+   * @param {number} group
+   */
+  constructor(id, group) {
+    /**
+     * @public
+     * @type {string}
+     **/
+    this.id = id;
+    /**
+     * @public
+     * @type {number}
+     **/
+    this.group = group;
+  }
+  /**
    * @member
-   * @type {string} 
+   * @type {string}
    * naive key
-   * 
+   *
    * The name of the node
    * Also should be unique
-   * This will break if someone wants to add another node 
-   * 
-   * - TODO: This should eventually be migrated to a standard unique ID integer or UUID
+   * This will break if someone wants to add another node
+   *
+   * - TODO: This should eventually be migrated to a standard unique ID integer
+   *  or UUID
    */
-  id;
 
   /**
-   * @type {number} 
-   * 
+   * @type {number}
+   *
    * Group number
    *  Also being used as naive key
    *  Colour groupings
    */
-  group;
 }
-
 /**
  * Link definition for plotting D3 strokes
- * The positive strength of `value` determines how nodes are positioned in relation to each other
+ * The positive strength of `value` determines how nodes are positioned in
+ * relation to each other
  * when warmed up in the physics simulation
- * 
+ *
  */
 class HappyLink {
+  /**
+   * The id name of the linked source node
+   * @member
+   * @type {string}
+   **/
+  /**
+   * The target that the source is linked to
+   * @member {string}
+   * @type {string}
+   */
+
+  /**
+   *
+   * @param {string} source
+   * @param {string} target
+   * @param {number} value
+   */
+  constructor(source, target, value) {
+    // class members. Should be private.
     /**
-     * The id name of the linked source node
-     * @member
+     * @public
      * @type {string}
      **/
-    source;
-    /**
-     * The target that the source is linked to
-     * @member {string}
-     * @type {string}
-     */
-    target;
-
+    this.source = source;
+    this.target = target;
     /**
      * The strength of the relationship.
      * @member {number}
-     * @type {number} 
-     * 
-     */
-    value;
-}
-/** @type {HappyNode} */
-
-class MiserableNodesLinks {
-  
-  /**
-   * @member {number}
-   */
-
-  /**
-   * constructor description
-   * @param  {[number} config [description]
-   */
-  constructor(config) {
-    // class members. Should be private. 
-    /** @private 
      * @type {number}
-     **/
-    this.nodes = config;
-    /** @private */
-    this.links = "bananas";
+     *
+     */
+    this.value = value;
   }
 }
+
 /**
- * @param {{
- *  nodes: [
- *    {
- *      id: string,
- *      group: string
- *    }
- *  ],
- *  links: [
- *    {
- *      source: string,
- *      target: string,
- *      value: string,   
- *    }
- *  ]
- * }} theMiserableDataNodesLinks Assumed not undefined null
- * 
+ *
+ */
+class MiserableNodesLinks {
+  /**
+   *
+   * @param {HappyNode[]} nodes
+   * @param {HappyLink[]} links
+   */
+  constructor(nodes, links) {
+    // class members. Should be private.
+    /**
+     * @public
+     **/
+    this.nodes = nodes;
+    /** @public */
+    this.links = links;
+  }
+}
+
+/* eslint-enable no-unused-vars */
+
+
+/**
+ * @param {MiserableNodesLinks} theMiserableDataNodesLinks
+ * Assumed not undefined null
+ *
  * @param {HappyNode} newNode
  * @param {HappyLink} newLink
- * 
+ *
  * @return {{
- *  nodes: [
+ *  nodes:
   *    {
   *      id: string,
-  *      group: string
-  *    }
-  *  ],
-  *  links: [
+  *      group: number
+  *    }[]
+  *  ,
+  *  links:
   *    {
   *      source: string,
   *      target: string,
-  *      value: string,   
-  *    }
-  *  ]
+  *      value: number,
+  *    }[]
+  *
   * }} the new object with nodes array and links array properties
  */
 function addSomeJsonNode(theMiserableDataNodesLinks, newNode, newLink) {
   theMiserableDataNodesLinks.nodes.push(newNode);
   theMiserableDataNodesLinks.links.push(newLink);
-  
+
   return theMiserableDataNodesLinks;
 }
 
 
-
 /** @type {HappyNode} */
-const newNode = {id: "id", group: 1};
+const newNode = { id: "id", group: 1 };
 /** @type {HappyLink} */
-const newLink = {source: "Combeferre", target: "id", value: 1000};
+const newLink = { source: "Combeferre", target: "id", value: 1000 };
 
 getData()
   .then((data) => addSomeJsonNode(data, newNode, newLink))
@@ -379,25 +536,29 @@ getData()
   .catch((reason) => console.error(`Something went horribly wrong`, reason));
 
 
-/* 
-  var mutableCounterOhNo = 1;
+// let mutableCounterOhNo = 1;
 
-  const recurseThisForeverTestAddStuffChart = setInterval(() => {
-    getData()
-    .then((data) => { 
+// const recurseThisForeverTestAddStuffChart = setInterval(() => {
+//   getData()
+//     .then((data) => {
+//       const someNumberOfElementsToDoThings = Array.from({
+//         length: mutableCounterOhNo,
+//       });
 
-      const someNumberOfElementsToDoThings = Array.from({length: mutableCounterOhNo});
+//       someNumberOfElementsToDoThings.forEach(() => addSomeJsonNode(
+//         data,
+//         newNode,
+//         newLink,
+//       ));
 
-      someNumberOfElementsToDoThings.forEach(() => addSomeJsonNode(data, newNode, newLink));
+//       mutableCounterOhNo += 1;
 
+//       return data;
+//     })
+//     .then(chart)
+//     .catch((reason) => console.error(`Something went horribly wrong`,
+// reason));
+// }, 2000,
+// );
 
-      mutableCounterOhNo += 1;
-
-      return data;
-    })
-    .then(chart)
-    .catch((reason) => console.error(`Something went horribly wrong`, reason));
-  },
-  2000
-  )
-*/
+// recurseThisForeverTestAddStuffChart;
