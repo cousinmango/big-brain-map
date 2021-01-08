@@ -1,5 +1,47 @@
 // @ts-check
 
+export interface HappyNode {
+  id: string;
+  group: number;
+}
+
+export interface HappyLink {
+  source: string;
+  target: string;
+  value: number;
+}
+
+/* eslint-enable no-unused-vars */
+
+/**
+ * @param {MiserableNodesLinks} theMiserableDataNodesLinks
+ * Assumed not undefined null
+ *
+ * @param {HappyNode} newNode
+ * @param {HappyLink} newLink
+ *
+ * @return {{
+ *  nodes:
+ *    {
+ *      id: string,
+ *      group: number
+ *    }[]
+ *  ,
+ *  links:
+ *    {
+ *      source: string,
+ *      target: string,
+ *      value: number,
+ *    }[]
+ *
+ * }} the new object with nodes array and links array properties
+ */
+
+export interface MiserableNodesLinks {
+  nodes: HappyNode[];
+  links: HappyLink[];
+}
+
 /*
 - FIXME: Remember to enable this later
 */
@@ -326,9 +368,6 @@ function chart(data) {
    * @param {*} theD3Zoom
    */
   function clicked(event, d, theD3Zoom) {
-    /**
-     * @type {string}
-     */
     const escapedID = `#${CSS.escape(d.id)}`;
 
     console.log(`clicked: ${d3.select(escapedID).attr('id')}`);
@@ -363,45 +402,27 @@ function chart(data) {
  * Nodes positions are defined dynamically through physic simulation
  * downstream with relation to link strength
  */
-class HappyNode {
-  /**
-   *
-   * @param {string} id
-   * @param {number} group
-   */
-  constructor(id, group) {
-    /**
-     * @public
-     * @type {string}
-     **/
-    this.id = id;
-    /**
-     * @public
-     * @type {number}
-     **/
-    this.group = group;
-  }
-  /**
-   * @member
-   * @type {string}
-   * naive key
-   *
-   * The name of the node
-   * Also should be unique
-   * This will break if someone wants to add another node
-   *
-   * - TODO: This should eventually be migrated to a standard unique ID integer
-   *  or UUID
-   */
+/**
+ * @member
+ * @type {string}
+ * naive key
+ *
+ * The name of the node
+ * Also should be unique
+ * This will break if someone wants to add another node
+ *
+ * - TODO: This should eventually be migrated to a standard unique ID integer
+ *  or UUID
+ */
 
-  /**
-   * @type {number}
-   *
-   * Group number
-   *  Also being used as naive key
-   *  Colour groupings
-   */
-}
+/**
+ * @type {number}
+ *
+ * Group number
+ *  Also being used as naive key
+ *  Colour groupings
+ */
+
 /**
  * Link definition for plotting D3 strokes
  * The positive strength of `value` determines how nodes are positioned in
@@ -409,111 +430,20 @@ class HappyNode {
  * when warmed up in the physics simulation
  *
  */
-class HappyLink {
-  /**
-   * The id name of the linked source node
-   * @member
-   * @type {string}
-   **/
-  /**
-   * The target that the source is linked to
-   * @member {string}
-   * @type {string}
-   */
 
-  /**
-   *
-   * @param {string} source
-   * @param {string} target
-   * @param {number} value
-   */
-  constructor(source, target, value) {
-    // class members. Should be private.
-    /**
-     * @public
-     * @type {string}
-     **/
-    this.source = source;
-    this.target = target;
-    /**
-     * The strength of the relationship.
-     * @member {number}
-     * @type {number}
-     *
-     */
-    this.value = value;
-  }
-}
-
-/**
- *
- */
-class MiserableNodesLinks {
-  /**
-   *
-   * @param {HappyNode[]} nodes
-   * @param {HappyLink[]} links
-   */
-  constructor(nodes, links) {
-    // class members. Should be private.
-    /**
-     * @public
-     **/
-    this.nodes = nodes;
-    /** @public */
-    this.links = links;
-  }
-}
-
-/* eslint-enable no-unused-vars */
-
-/**
- * @param {MiserableNodesLinks} theMiserableDataNodesLinks
- * Assumed not undefined null
- *
- * @param {HappyNode} newNode
- * @param {HappyLink} newLink
- *
- * @return {{
- *  nodes:
- *    {
- *      id: string,
- *      group: number
- *    }[]
- *  ,
- *  links:
- *    {
- *      source: string,
- *      target: string,
- *      value: number,
- *    }[]
- *
- * }} the new object with nodes array and links array properties
- */
-
-export interface HappyNode {
-  nodes: {
-    id: string;
-    group: number;
-  }[];
-  links: {
-    source: string;
-    target: string;
-    value: number;
-  }[];
-}
-
-function addSomeJsonNode(theMiserableDataNodesLinks, newNode, newLink) {
+function addSomeJsonNode(
+  theMiserableDataNodesLinks: MiserableNodesLinks,
+  newNode: HappyNode,
+  newLink: HappyLink,
+): MiserableNodesLinks {
   theMiserableDataNodesLinks.nodes.push(newNode);
   theMiserableDataNodesLinks.links.push(newLink);
 
   return theMiserableDataNodesLinks;
 }
 
-/** @type {HappyNode} */
-const newNode = { id: 'id', group: 1 };
-/** @type {HappyLink} */
-const newLink = { source: 'Combeferre', target: 'id', value: 1000 };
+const newNode: HappyNode = { id: 'id', group: 1 };
+const newLink : HappyLink = { source: 'Combeferre', target: 'id', value: 1000 };
 
 getData()
   .then((data) => addSomeJsonNode(data, newNode, newLink))
