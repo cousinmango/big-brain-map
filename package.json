@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "Your brain mapped mind brain map",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "d3": "^6.3.1"
+  },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
@@ -13,7 +15,6 @@
     "eslint-config-google": "^0.14.0",
     "husky": "^4.3.0",
     "standard-version": "^9.0.0",
-    "ts-loader": "^8.0.14",
     "typescript": "^4.1.3"
   },
   "scripts": {
