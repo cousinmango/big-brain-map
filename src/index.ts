@@ -5,14 +5,12 @@
 */
 /* global d3 */
 
-"use strict";
-
 /**
  *
  * @param {string} dataPath
  * @return {Promise<MiserableNodesLinks>}
  */
-async function getData(dataPath = "./seed/miserables.json") {
+async function getData(dataPath = './seed/miserables.json') {
   const responseData = fetch(dataPath).then((response) => response.json());
   const jsonData = responseData;
 
@@ -68,11 +66,7 @@ function getDragBehaviour(simulation) {
   // It works
   // - FIXME: This works but clashes with d3 typing expected svg.call return
   // @ts-ignore
-  return d3
-    .drag()
-    .on("start", dragStarted)
-    .on("drag", dragged)
-    .on("end", dragEnded);
+  return d3.drag().on('start', dragStarted).on('drag', dragged).on('end', dragEnded);
 }
 
 const height = window.innerHeight;
@@ -94,7 +88,6 @@ function color() {
   return (d) => scale(d.group);
 }
 
-
 // eslint-disable-next-line valid-jsdoc
 /**
  * Does something to the selection using
@@ -107,37 +100,43 @@ function color() {
 function zoomed(gSelection, zoomEvent) {
   const { transform } = zoomEvent;
 
-  gSelection.attr("transform", transform.toString());
+  gSelection.attr('transform', transform.toString());
 }
 
 /**
  * Gets zoom behaviour?
  * Sets limits
  * @param {d3.Selection<
-  *  SVGGElement, any, HTMLElement, any
-  * >
-  * } selectionToZoomRescale
-  * @return {d3.ZoomBehavior<Element, any>}
-  */
+ *  SVGGElement, any, HTMLElement, any
+ * >
+ * } selectionToZoomRescale
+ * @return {d3.ZoomBehavior<Element, any>}
+ */
 function getSuperZoomScrollBehaviour(selectionToZoomRescale) {
-  return d3.zoom()
-    .extent([[0, 0], [width, height]])
-    .scaleExtent([0.1, 8])
-    // "start", "zoom", "end"
-    .on("zoom", (zoomEvent) => zoomed(selectionToZoomRescale, zoomEvent));
+  return (
+    d3
+      .zoom()
+      .extent([
+        [0, 0],
+        [width, height],
+      ])
+      .scaleExtent([0.1, 8])
+      // "start", "zoom", "end"
+      .on('zoom', (zoomEvent) => zoomed(selectionToZoomRescale, zoomEvent))
+  );
 }
 
 // eslint-disable-next-line valid-jsdoc
 /**
-  *
-  * @param {*} links
-  * @return {d3.ForceLink<
-  *   any,
-  *   d3.SimulationLinkDatum<
-  *     d3.SimulationNodeDatum & HappyNode
-  *   >
-  * >} force link for simulation
-  */
+ *
+ * @param {*} links
+ * @return {d3.ForceLink<
+ *   any,
+ *   d3.SimulationLinkDatum<
+ *     d3.SimulationNodeDatum & HappyNode
+ *   >
+ * >} force link for simulation
+ */
 function useTheForceOnNodeLink(links) {
   // eslint-disable-next-line valid-jsdoc
   /**
@@ -150,10 +149,8 @@ function useTheForceOnNodeLink(links) {
    * >} z
    */
   function getForceLinkHappyNode() {
-    return d3
-      .forceLink(links);
+    return d3.forceLink(links);
   }
-
 
   // eslint-disable-next-line valid-jsdoc
   /**
@@ -165,15 +162,14 @@ function useTheForceOnNodeLink(links) {
    *  >
    * >} zz
    * @return {d3.ForceLink<
-    *  any,
-    *  d3.SimulationLinkDatum<
-    *    d3.SimulationNodeDatum & HappyNode
-    *  >
-    * >}
+   *  any,
+   *  d3.SimulationLinkDatum<
+   *    d3.SimulationNodeDatum & HappyNode
+   *  >
+   * >}
    */
   function extractedFnForJsDocCustomDataModel(zz = getForceLinkHappyNode) {
-    return zz()
-      .id((d) => d.id);
+    return zz().id((d) => d.id);
   }
 
   /*
@@ -182,10 +178,8 @@ function useTheForceOnNodeLink(links) {
    .id((d) => d.id)
    .distance(1);
    */
-  return extractedFnForJsDocCustomDataModel(getForceLinkHappyNode)
-    .distance(1);
+  return extractedFnForJsDocCustomDataModel(getForceLinkHappyNode).distance(1);
 }
-
 
 // eslint-disable-next-line valid-jsdoc
 /**
@@ -245,7 +239,6 @@ function chart(data) {
    */
   const nodeCollisionConfig = d3.forceCollide(0);
 
-
   // eslint-disable-next-line valid-jsdoc
 
   /**
@@ -255,14 +248,10 @@ function chart(data) {
 
   const simulation = d3
     .forceSimulation(nodes)
-    .force(
-      "link",
-      useTheForceOnNodeLink(links),
-
-    )
-    .force("charge", d3.forceManyBody().strength(-500))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("collisionForce", raddddd);
+    .force('link', useTheForceOnNodeLink(links))
+    .force('charge', d3.forceManyBody().strength(-500))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collisionForce', raddddd);
 
   /*
     Remember to append the generated svg onto a page element
@@ -271,77 +260,64 @@ function chart(data) {
       visualisation
     )
   */
-  const svg = d3
-    .select("body")
-    .append("svg")
-    .attr("viewBox", `0 0 ${width} ${height}`);
+  const svg = d3.select('body').append('svg').attr('viewBox', `0 0 ${width} ${height}`);
 
-  const svgContainerGroupG = svg.append("g");
+  const svgContainerGroupG = svg.append('g');
 
   const link = svgContainerGroupG
-    .append("g")
-    .attr("stroke", "#999")
-    .attr("stroke-opacity", 0.6)
-    .selectAll("line")
+    .append('g')
+    .attr('stroke', '#999')
+    .attr('stroke-opacity', 0.6)
+    .selectAll('line')
     .data(links)
-    .join("line")
-    .attr("stroke-width", (d) => Math.sqrt(d.value));
+    .join('line')
+    .attr('stroke-width', (d) => Math.sqrt(d.value));
 
   const node = svgContainerGroupG
-    .append("g")
-    .attr("stroke", "#fff")
-    .attr("stroke-width", 1.5)
-    .selectAll("circle")
+    .append('g')
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 1.5)
+    .selectAll('circle')
     .data(nodes)
-    .join("circle")
-    .attr("id", (d) => d.id)
-    .attr("r", (d) => d.id.length * 4)
-    .attr("fill", color())
+    .join('circle')
+    .attr('id', (d) => d.id)
+    .attr('r', (d) => d.id.length * 4)
+    .attr('fill', color())
     .call(
       // - FIXME: This return is required
 
       getDragBehaviour(simulation),
-
     )
-    .on("click", (event, d) => clicked(
-      event,
-      d,
-      getSuperZoomScrollBehaviour(svgContainerGroupG),
-    ));
-
+    .on('click', (event, d) => clicked(event, d, getSuperZoomScrollBehaviour(svgContainerGroupG)));
 
   const label = svgContainerGroupG
-    .append("g")
-    .selectAll("text")
+    .append('g')
+    .selectAll('text')
     .data(nodes)
-    .join("text")
+    .join('text')
     .text((d) => d.id)
-    .attr("fill", "black")
-    .attr("dy", "0em")
-    .attr("text-anchor", "middle")
-    .attr("dominant-baseline", "middle")
-    .call(
-      getDragBehaviour(simulation),
-    );
+    .attr('fill', 'black')
+    .attr('dy', '0em')
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'middle')
+    .call(getDragBehaviour(simulation));
 
-  node.append("title").text((d) => d.id);
-
+  node.append('title').text((d) => d.id);
 
   // allow free zooming/panning
   // @ts-ignore
   svg.call(getSuperZoomScrollBehaviour(svgContainerGroupG));
 
-  simulation.on("tick", () => {
+  simulation.on('tick', () => {
     link
-      .attr("x1", (d) => d.source.x)
-      .attr("y1", (d) => d.source.y)
-      .attr("x2", (d) => d.target.x)
-      .attr("y2", (d) => d.target.y);
+      .attr('x1', (d) => d.source.x)
+      .attr('y1', (d) => d.source.y)
+      .attr('x2', (d) => d.target.x)
+      .attr('y2', (d) => d.target.y);
 
-    node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
-    label.attr("x", (d) => d.x).attr("y", (d) => d.y);
+    node.attr('cx', (d) => d.x).attr('cy', (d) => d.y);
+    label.attr('x', (d) => d.x).attr('y', (d) => d.y);
   });
-
 
   /**
    *
@@ -355,22 +331,20 @@ function chart(data) {
      */
     const escapedID = `#${CSS.escape(d.id)}`;
 
-    console.log(`clicked: ${d3.select(escapedID).attr("id")}`);
+    console.log(`clicked: ${d3.select(escapedID).attr('id')}`);
     const translate = [width / 2, height / 2];
 
-    svg.transition()
+    svg
+      .transition()
       .duration(750)
       .call(
         theD3Zoom.transform,
         d3.zoomIdentity.translate(
           // Why are we subtracting a Selection object from a number
           // @ts-ignore
-          translate[0] - d3.select(escapedID)
-            .attr("cx")
-          ,
+          translate[0] - d3.select(escapedID).attr('cx'),
           // @ts-ignore
-          translate[1] - d3.select(escapedID)
-            .attr("cy"),
+          translate[1] - d3.select(escapedID).attr('cy'),
         ),
       ); // updated for d3 v4
   }
@@ -493,7 +467,6 @@ class MiserableNodesLinks {
 
 /* eslint-enable no-unused-vars */
 
-
 /**
  * @param {MiserableNodesLinks} theMiserableDataNodesLinks
  * Assumed not undefined null
@@ -503,20 +476,33 @@ class MiserableNodesLinks {
  *
  * @return {{
  *  nodes:
-  *    {
-  *      id: string,
-  *      group: number
-  *    }[]
-  *  ,
-  *  links:
-  *    {
-  *      source: string,
-  *      target: string,
-  *      value: number,
-  *    }[]
-  *
-  * }} the new object with nodes array and links array properties
+ *    {
+ *      id: string,
+ *      group: number
+ *    }[]
+ *  ,
+ *  links:
+ *    {
+ *      source: string,
+ *      target: string,
+ *      value: number,
+ *    }[]
+ *
+ * }} the new object with nodes array and links array properties
  */
+
+export interface HappyNode {
+  nodes: {
+    id: string;
+    group: number;
+  }[];
+  links: {
+    source: string;
+    target: string;
+    value: number;
+  }[];
+}
+
 function addSomeJsonNode(theMiserableDataNodesLinks, newNode, newLink) {
   theMiserableDataNodesLinks.nodes.push(newNode);
   theMiserableDataNodesLinks.links.push(newLink);
@@ -524,17 +510,15 @@ function addSomeJsonNode(theMiserableDataNodesLinks, newNode, newLink) {
   return theMiserableDataNodesLinks;
 }
 
-
 /** @type {HappyNode} */
-const newNode = { id: "id", group: 1 };
+const newNode = { id: 'id', group: 1 };
 /** @type {HappyLink} */
-const newLink = { source: "Combeferre", target: "id", value: 1000 };
+const newLink = { source: 'Combeferre', target: 'id', value: 1000 };
 
 getData()
   .then((data) => addSomeJsonNode(data, newNode, newLink))
   .then(chart)
   .catch((reason) => console.error(`Something went horribly wrong`, reason));
-
 
 // let mutableCounterOhNo = 1;
 
