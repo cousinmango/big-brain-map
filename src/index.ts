@@ -1,4 +1,16 @@
-import type { Simulation, SimulationNodeDatum } from 'd3';
+import type {
+  DraggedElementBaseType,
+  D3DragEvent,
+  Simulation,
+  SimulationLinkDatum,
+  SimulationNodeDatum,
+  D3ZoomEvent,
+  ZoomedElementBaseType,
+  EnterElement,
+  ZoomBehavior,
+  Transition,
+  Selection,
+} from 'd3';
 
 const d3 = window.d3;
 
@@ -44,17 +56,12 @@ export interface MiserableNodesLinks {
   links: HappyLink[];
 }
 
-/*
-- FIXME: Remember to enable this later
-*/
-/* global d3 */
-
 /**
+ * Text
  *
- * @param {string} dataPath
- * @return {Promise<MiserableNodesLinks>}
+ * @param dataPath path to assets json file
  */
-async function getData(dataPath = './assets/miserables.json') {
+async function getData(dataPath = './assets/miserables.json'): Promise<MiserableNodesLinks> {
   const responseData = fetch(dataPath).then((response) => response.json());
   const jsonData = responseData;
 
@@ -62,6 +69,16 @@ async function getData(dataPath = './assets/miserables.json') {
 }
 
 /* eslint no-undef: ["error"] */
+// interface Something extends DraggedElementBaseType, SimulationNodeDatum, Subject {
+// # drag.subject([subject]) · Source, Examples
+
+// If subject is specified, sets the subject accessor to the specified object or function and returns the drag behavior. If subject is not specified, returns the current subject accessor, which defaults to:
+
+// function subject(event, d) {
+//   return d == null ? {x: event.x, y: event.y} : d;
+// }
+
+interface SomeElement extends DraggedElementBaseType {}
 
 // eslint-disable-next-line valid-jsdoc
 /**
@@ -73,14 +90,21 @@ async function getData(dataPath = './assets/miserables.json') {
  *  any
  * >
  * }
+ *
+ *
  */
-function getDragBehaviour(simulation: Simulation<SimulationNodeDatum>) {
-  // eslint-disable-next-line valid-jsdoc
-  /**
-   * a
-   * @param {import("d3").D3DragEvent} event a
-   */
-  function dragStarted(event) {
+function getDragBehaviour(
+  simulation: Simulation<SimulationNodeDatum, SimulationLinkDatum<SimulationNodeDatum>>,
+): (
+  selection: d3.Selection<
+    Window | Document | Element | EnterElement | SVGCircleElement | null,
+    HappyNode,
+    SVGGElement,
+    unknown
+  >,
+  ...args: any[]
+) => void /* d3.DragBehavior<Element & (Window | Document | EnterElement | SVGCircleElement), any, any> */ {
+  function dragStarted(event: d3.D3DragEvent<DraggedElementBaseType, SimulationNodeDatum, any>) {
     if (!event.active) simulation.alphaTarget(0.3).restart();
     event.subject.fx = event.subject.x;
     event.subject.fy = event.subject.y;
@@ -91,7 +115,7 @@ function getDragBehaviour(simulation: Simulation<SimulationNodeDatum>) {
    *
    * @param {import("d3").D3DragEvent} event
    */
-  function dragged(event) {
+  function dragged(event: D3DragEvent<DraggedElementBaseType, SimulationNodeDatum, any>) {
     event.subject.fx = event.x;
     event.subject.fy = event.y;
   }
@@ -101,7 +125,7 @@ function getDragBehaviour(simulation: Simulation<SimulationNodeDatum>) {
    *
    * @param {import("d3").D3DragEvent} event
    */
-  function dragEnded(event) {
+  function dragEnded(event: D3DragEvent<DraggedElementBaseType, SimulationNodeDatum, any>) {
     if (!event.active) simulation.alphaTarget(0);
     event.subject.fx = null;
     event.subject.fy = null;
@@ -125,11 +149,11 @@ const width = window.innerWidth;
  * string | number | boolean
  * >}
  */
-function color() {
+function color(): (d: SimulationNodeDatum & HappyNode) => string {
   // An array of ten categorical colors represented as RGB hexadecimal strings.
   const scale = d3.scaleOrdinal(d3.schemeCategory10);
 
-  return (d) => scale(d.group);
+  return (d: SimulationNodeDatum & HappyNode) => scale(`${d.group}`);
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -141,7 +165,10 @@ function color() {
  *  >} gSelection overall viewbox group
  * @param {import("d3").D3ZoomEvent} zoomEvent hmm
  */
-function zoomed(gSelection, zoomEvent) {
+function zoomed(
+  gSelection: d3.Selection<SVGGElement, any, HTMLElement, any>,
+  zoomEvent: D3ZoomEvent<ZoomedElementBaseType, SimulationNodeDatum>,
+) {
   const { transform } = zoomEvent;
 
   gSelection.attr('transform', transform.toString());
@@ -156,7 +183,9 @@ function zoomed(gSelection, zoomEvent) {
  * } selectionToZoomRescale
  * @return {d3.ZoomBehavior<Element, any>}
  */
-function getSuperZoomScrollBehaviour(selectionToZoomRescale) {
+function getSuperZoomScrollBehaviour(
+  selectionToZoomRescale: d3.Selection<SVGGElement, any, HTMLElement, any>,
+) {
   return (
     d3
       .zoom()
@@ -181,19 +210,19 @@ function getSuperZoomScrollBehaviour(selectionToZoomRescale) {
  *   >
  * >} force link for simulation
  */
-function useTheForceOnNodeLink(links) {
+function useTheForceOnNodeLink(
+  links: Array<d3.SimulationLinkDatum<d3.SimulationNodeDatum & HappyLink>>,
+): d3.SimulationLinkDatum<d3.SimulationNodeDatum & HappyLink> {
   // eslint-disable-next-line valid-jsdoc
-  /**
-   *
-   * @return {d3.ForceLink<
-   *  d3.SimulationNodeDatum & HappyNode,
-   *  d3.SimulationLinkDatum<
-   *    d3.SimulationNodeDatum & HappyNode
-   *  >
-   * >} z
-   */
-  function getForceLinkHappyNode() {
-    return d3.forceLink(links);
+
+  function getForceLinkHappyNode(): d3.ForceLink<
+    SimulationNodeDatum & HappyLink,
+    SimulationLinkDatum<SimulationNodeDatum & HappyLink>
+  > {
+    return d3.forceLink<
+      SimulationNodeDatum & HappyLink,
+      SimulationLinkDatum<SimulationNodeDatum & HappyLink>
+    >(links);
   }
 
   // eslint-disable-next-line valid-jsdoc
@@ -225,15 +254,6 @@ function useTheForceOnNodeLink(links) {
   return extractedFnForJsDocCustomDataModel(getForceLinkHappyNode).distance(1);
 }
 
-// eslint-disable-next-line valid-jsdoc
-/**
- *
- * @param {(d3.SimulationNodeDatum & HappyNode)} collisionNode
- * @param {number} i
- * @param {(d3.SimulationNodeDatum & HappyNode)[]} collisionNodes
- *
- *
- */
 function getCollisionFactorHappyNode(
   collisionNode: SimulationNodeDatum & HappyNode,
   i: number,
@@ -249,11 +269,10 @@ function getCollisionFactorHappyNode(
  * To enforce compile-time JSDoc types for custom node data model.
  *
  * Works in runtime anyway.
- *
- * @param {d3.ForceCollide<d3.SimulationNodeDatum & HappyNode>} collisionation
- * @return {d3.ForceCollide<d3.SimulationNodeDatum & HappyNode>}
  */
-function getForceCollideDatumModelCoerced(collisionation) {
+function getForceCollideDatumModelCoerced(
+  collisionation: d3.ForceCollide<d3.SimulationNodeDatum & HappyNode>,
+): d3.ForceCollide<d3.SimulationNodeDatum & HappyNode> {
   return collisionation.radius(getCollisionFactorHappyNode);
 }
 
@@ -265,27 +284,24 @@ function getForceCollideDatumModelCoerced(collisionation) {
 
 /**
  * Do the chart!
- * @param {*} data give the fetched json data ez plug in for flat webpage
+ * @param data give the fetched json data ez plug in for flat webpage
  *
- * @return {SVGSVGElement} This is a weird element.
+ * @return This is a weird element.
  */
-function chart(data) {
-  const links = data.links.map((d) => Object.create(d));
-  const nodes = data.nodes.map((d) => Object.create(d));
+function chart(data: MiserableNodesLinks): SVGSVGElement {
+  const links: HappyLink[] = data.links.map((d) => Object.create(d));
+  const nodes: HappyNode[] = data.nodes.map((d) => Object.create(d));
 
   // Mutato potato
   // Any number here as it is unused, overridden by the node-radius function
-  /**
-   * @type {d3.ForceCollide<d3.SimulationNodeDatum & HappyNode>}
-   */
-  const nodeCollisionConfig = d3.forceCollide(0);
+  const nodeCollisionConfig: d3.ForceCollide<d3.SimulationNodeDatum & HappyNode> = d3.forceCollide(
+    0,
+  );
 
   // eslint-disable-next-line valid-jsdoc
-
-  /**
-   *  @type {d3.ForceCollide<d3.SimulationNodeDatum & HappyNode>}
-   */
-  const raddddd = getForceCollideDatumModelCoerced(nodeCollisionConfig);
+  const raddddd: d3.ForceCollide<
+    d3.SimulationNodeDatum & HappyNode
+  > = getForceCollideDatumModelCoerced(nodeCollisionConfig);
 
   const simulation = d3
     .forceSimulation(nodes)
@@ -312,24 +328,32 @@ function chart(data) {
     .selectAll('line')
     .data(links)
     .join('line')
-    .attr('stroke-width', (d) => Math.sqrt(d.value));
+    .attr('stroke-width', (d) =>
+      Math.sqrt((d as SimulationLinkDatum<SimulationNodeDatum & HappyNode> & HappyLink).value),
+    );
 
   const node = svgContainerGroupG
     .append('g')
     .attr('stroke', '#fff')
     .attr('stroke-width', 1.5)
     .selectAll('circle')
-    .data(nodes)
+    .data(nodes as HappyNode[])
     .join('circle')
     .attr('id', (d) => d.id)
     .attr('r', (d) => d.id.length * 4)
     .attr('fill', color())
     .call(
       // - FIXME: This return is required
-
+      // but it works
       getDragBehaviour(simulation),
     )
-    .on('click', (event, d) => clicked(event, d, getSuperZoomScrollBehaviour(svgContainerGroupG)));
+    .on('click', (event, d) =>
+      clicked(
+        event,
+        d as SimulationNodeDatum & HappyNode,
+        getSuperZoomScrollBehaviour(svgContainerGroupG),
+      ),
+    );
 
   const label = svgContainerGroupG
     .append('g')
@@ -350,13 +374,21 @@ function chart(data) {
   svg.call(getSuperZoomScrollBehaviour(svgContainerGroupG));
 
   simulation.on('tick', () => {
-    link
-      .attr('x1', (d) => d.source.x)
-      .attr('y1', (d) => d.source.y)
-      .attr('x2', (d) => d.target.x)
-      .attr('y2', (d) => d.target.y);
+    type ReallyBadTypeAliasSelectionCoerceDatumType = Selection<Element | Window | Document | EnterElement | SVGLineElement | null, HappyLink & {
+      source: SimulationNodeDatum;
+    }, SVGGElement, unknown>;
 
-    node.attr('cx', (d) => d.x).attr('cy', (d) => d.y);
+    (link as ReallyBadTypeAliasSelectionCoerceDatumType)
+      /* overlapping keys break things */
+      .attr('x1', (d: Pick<HappyLink, 'value'> & { source: SimulationNodeDatum }) => d.source.x!) // d3 d.source as string ID and somehow references the source ID as the node object for the .x? weird
+      .attr('y1', (d: any) => d.source.y)
+      .attr('x2', (d: any) => d.target.x)
+      .attr('y2', (d: any) => d.target.y);
+
+    ((node as d3.Selection<any, HappyNode & SimulationNodeDatum, any, any>).attr(
+      'cx',
+      (d: HappyNode & SimulationNodeDatum) => d?.x,
+    ) as d3.Selection<any, any, any, any>).attr('cy', (d) => d.y);
     label.attr('x', (d) => d.x).attr('y', (d) => d.y);
   });
 
@@ -366,7 +398,14 @@ function chart(data) {
    * @param {*} d
    * @param {*} theD3Zoom
    */
-  function clicked(event, d, theD3Zoom) {
+  function clicked(
+    event: MouseEvent,
+    d: SimulationNodeDatum & HappyNode,
+    theD3Zoom: (
+      transition: d3.Transition<SVGSVGElement, unknown, HTMLElement, any>,
+      ...args: any[]
+    ) => any,
+  ) {
     const escapedID = `#${CSS.escape(d.id)}`;
 
     console.log(`clicked: ${d3.select(escapedID).attr('id')}`);
@@ -376,7 +415,7 @@ function chart(data) {
       .transition()
       .duration(750)
       .call(
-        theD3Zoom.transform,
+        ((theD3Zoom as unknown) as d3.ZoomBehavior<any, any>).transform,
         d3.zoomIdentity.translate(
           // Why are we subtracting a Selection object from a number
           // @ts-ignore
@@ -387,7 +426,8 @@ function chart(data) {
       ); // updated for d3 v4
   }
 
-  return svg.node();
+  // Returns null if selection is empty
+  return svg.node()!;
 }
 
 /* eslint-disable no-unused-vars */
@@ -443,8 +483,6 @@ function addSomeJsonNode(
 
 const newNode: HappyNode = { id: 'id', group: 1 };
 const newLink: HappyLink = { source: 'Combeferre', target: 'id', value: 1000 };
-
-
 
 getData()
   .then((data) => addSomeJsonNode(data, newNode, newLink))
