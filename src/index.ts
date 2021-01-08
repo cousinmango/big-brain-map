@@ -1,4 +1,6 @@
-// @ts-check
+import type { Simulation, SimulationNodeDatum } from 'd3';
+
+const d3 = window.d3;
 
 export interface HappyNode {
   id: string;
@@ -52,7 +54,7 @@ export interface MiserableNodesLinks {
  * @param {string} dataPath
  * @return {Promise<MiserableNodesLinks>}
  */
-async function getData(dataPath = './seed/miserables.json') {
+async function getData(dataPath = './assets/miserables.json') {
   const responseData = fetch(dataPath).then((response) => response.json());
   const jsonData = responseData;
 
@@ -72,7 +74,7 @@ async function getData(dataPath = './seed/miserables.json') {
  * >
  * }
  */
-function getDragBehaviour(simulation) {
+function getDragBehaviour(simulation: Simulation<SimulationNodeDatum>) {
   // eslint-disable-next-line valid-jsdoc
   /**
    * a
@@ -232,19 +234,16 @@ function useTheForceOnNodeLink(links) {
  *
  *
  */
-function getCollisionFactorHappyNode(collisionNode, i, collisionNodes) {
+function getCollisionFactorHappyNode(
+  collisionNode: SimulationNodeDatum & HappyNode,
+  i: number,
+  collisionNodes: Array<SimulationNodeDatum & HappyNode>,
+) {
   const { id } = collisionNode;
 
   return id.length * 5;
 }
-/**
- *
- * @type {(node: (d3.SimulationNodeDatum & HappyNode),
- * i: number,
- * nodes: (d3.SimulationNodeDatum & HappyNode)[]) => number}
- */
-const unusedVar = getCollisionFactorHappyNode;
-unusedVar;
+
 // eslint-disable-next-line valid-jsdoc
 /**
  * To enforce compile-time JSDoc types for custom node data model.
@@ -443,7 +442,9 @@ function addSomeJsonNode(
 }
 
 const newNode: HappyNode = { id: 'id', group: 1 };
-const newLink : HappyLink = { source: 'Combeferre', target: 'id', value: 1000 };
+const newLink: HappyLink = { source: 'Combeferre', target: 'id', value: 1000 };
+
+
 
 getData()
   .then((data) => addSomeJsonNode(data, newNode, newLink))
