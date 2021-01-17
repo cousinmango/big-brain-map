@@ -11,50 +11,11 @@ import type {
   Transition,
   Selection,
 } from 'd3';
+import { MiserableNodesLinks } from './models/MiserableNodesLinks';
+import { HappyLink } from './models/HappyLink';
+import { HappyNode } from './models/HappyNode';
 
 const d3 = window.d3;
-
-export interface HappyNode {
-  id: string;
-  group: number;
-}
-
-export interface HappyLink {
-  source: string;
-  target: string;
-  value: number;
-}
-
-/* eslint-enable no-unused-vars */
-
-/**
- * @param {MiserableNodesLinks} theMiserableDataNodesLinks
- * Assumed not undefined null
- *
- * @param {HappyNode} newNode
- * @param {HappyLink} newLink
- *
- * @return {{
- *  nodes:
- *    {
- *      id: string,
- *      group: number
- *    }[]
- *  ,
- *  links:
- *    {
- *      source: string,
- *      target: string,
- *      value: number,
- *    }[]
- *
- * }} the new object with nodes array and links array properties
- */
-
-export interface MiserableNodesLinks {
-  nodes: HappyNode[];
-  links: HappyLink[];
-}
 
 /**
  * Text
