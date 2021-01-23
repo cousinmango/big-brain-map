@@ -1,5 +1,16 @@
 # big-brain-map
 
+Do the tsc -w
+TypeScript now
+
+It just works!
+
+Trying to avoid adding additional critical tooling components (creepy creepers) bundlers
+e.g. webpack grunt gulp rollup ts-node
+
+To deter going on a lengthy tangent of "low-value" code understanding all the configuration flags
+Rabbit hole
+
 From sample repo:
 
 > - Displays a mindmap type layout.
@@ -12,7 +23,7 @@ From sample repo:
 
 ## Setup
 
-We use conventional commit tools and standard-version to guide and automate traceability along the lifetime of the big braing mind mapping wonderland project.
+We use conventional commit tools and standard-version to guide and automate traceability along the lifetime of the big brain gg mind mapping wonderland project.
 
 BREAKING.feature.patch (major.minor.patch)
 
@@ -26,6 +37,7 @@ npm install -g @commitlint/cli @commitlint/config-conventional
 ./scripts/ide/vs-code-extensions-installer.sh
 
 # node_modules
+# linting tools
 npm ci
 
 
