@@ -1,4 +1,4 @@
-import type {
+import {
   DraggedElementBaseType,
   D3DragEvent,
   Simulation,
@@ -10,6 +10,7 @@ import type {
   ZoomBehavior,
   Transition,
   Selection,
+  forceSimulation,
 } from 'd3';
 
 import type * as gg from 'd3';
@@ -60,5 +61,4 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
   const forceSimulation: gg.Simulation<HappyNode, HappyLink> = d3.forceSimulation(nodes);
 
   const chargedPhysicsForceSimulation = forceSimulation.force('link');
-
 }
