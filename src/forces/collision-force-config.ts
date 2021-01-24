@@ -9,7 +9,7 @@ type DefinedForce = 'link' | 'charge' | 'center' | 'collisionForce';
  * Use the force
  * the chained .force calls on force simulations
  */
-function utilityUseTheForceWrapper<N extends SimulationNodeDatum, L extends SimulationLinkDatum<N> >(
+export function utilityUseTheForceWrapper<N extends SimulationNodeDatum, L extends SimulationLinkDatum<N> >(
   simulation: Simulation<N, L>,
   name: DefinedForce,
   force: Force<N, L>,

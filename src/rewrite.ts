@@ -17,6 +17,7 @@ import type * as gg from 'd3';
 import { MiserableNodesLinks } from './models/miserable-nodes-links';
 import { HappyLink } from './models/happy-link';
 import { HappyNode } from './models/happy-node';
+import { utilityUseTheForceWrapper } from './forces/collision-force-config';
 import sampleMiserablesDataJson from './models/miserables.json';
 
 const d3: typeof gg = window.d3;
@@ -41,7 +42,6 @@ function getCollisionForce(): gg.ForceCollide<HappyNode> {
   return nodeCollisionForceConfig;
 }
 
-
 /**
  * Arbitrarily create a collision radius force based on the node value (name length)
  * ?
@@ -54,11 +54,37 @@ function getCollisionFactorFromNameLength({
   return idNameForArbitraryLengthDerivedForce.length * 5;
 }
 
+function getForceLink(links: HappyLink[]) {
+  return d3.forceLink(links);
+}
 function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
   const { nodes, links } = nodesLinksData;
 
   const forceNodeRadius = getCollisionForce();
-  const forceSimulation: gg.Simulation<HappyNode, HappyLink> = d3.forceSimulation(nodes);
+  const forceSim: gg.Simulation<HappyNode, HappyLink> = d3.forceSimulation(nodes);
 
-  const chargedPhysicsForceSimulation = forceSimulation.force('link');
+  const chargedPhysicsForceSimulation = forceSim.force('link');
+  const linked = utilityUseTheForceWrapper<HappyNode, HappyLink>(
+    forceSim,
+    'link',
+    d3
+      .forceLink<HappyNode, HappyLink>(links)
+      .id((node) => node.id)
+      .distance(1),
+  );
+  const charged = utilityUseTheForceWrapper<HappyNode, HappyLink>(
+    linked,
+    'charge',
+    d3.forceManyBody<HappyNode>().strength(-500),
+  );
+  const centeredWithinViewport = utilityUseTheForceWrapper<HappyNode, HappyLink>(
+    charged,
+    'center',
+    d3.forceCenter(innerWidth / 2, innerHeight / 2),
+  );
+  const radiusForced = utilityUseTheForceWrapper<HappyNode, HappyLink>( 
+    centeredWithinViewport,
+    'collisionForce',
+    getCollisionForce()
+  )
 }
