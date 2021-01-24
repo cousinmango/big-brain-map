@@ -31,6 +31,18 @@ const d3: typeof gg = window.d3;
 const sampleData: MiserableNodesLinks = miserableData;
 
 /**
+ * Scales the data node .group value into arbitrary hexadecimal strings
+ * (for colour values)
+ * e.g 1 = #00000 2 = #1f1f1f 10 = #ffffff
+ */
+function getScaledColourValueFromNodeGroup(d: HappyNode): string {
+  // An array of ten categorical colors represented as RGB hexadecimal strings.
+  const scale = d3.scaleOrdinal(d3.schemeCategory10);
+
+  return scale(`${d.group}`);
+}
+
+/**
  *
  * - FIXME: Remove this if node-radius function overrides this anyway.
  *
@@ -167,8 +179,8 @@ function handleDragStartEventSubjectNodePositioning(
     // Not sure if this should escape early or continue with start dragging
   }
   // Set new fixed position
-  event.subject.fx = event.x;
-  event.subject.fy = event.y;
+  event.subject.fx = event.subject.x;
+  event.subject.fy = event.subject.y;
 }
 /**
  * Presumably while dragging.
@@ -249,20 +261,6 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
   const svg = d3.select('body').append('svg').attr('viewBox', `0 0 ${innerWidth} ${innerHeight}`);
   const svgContainerGroupG = svg.append('g');
 
-  const paintedLinks: gg.Selection<
-    SomeElementForSelection,
-    HappyLink,
-    SVGGElement,
-    unknown
-  > = svgContainerGroupG
-    .append('g')
-    .attr('stroke', '#999')
-    .attr('stroke-opacity', 0.6)
-    .selectAll('line')
-    .data(links)
-    .join('line')
-    .attr('stroke-width', (d) => Math.sqrt(d.value));
-
   const paintedNodes: gg.Selection<
     SomeElementForSelection,
     HappyNode,
@@ -277,10 +275,66 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     .join('circle')
     .attr('id', (d) => d.id)
     .attr('r', (d) => d.id.length * 4)
-    .call((_selection) => dragHandler(forceSim));
-  paintedLinks;
-  paintedNodes;
+    .attr('fill', getScaledColourValueFromNodeGroup)
+    .call(
+      /*
+      Maybe it is missing the `this` context?
+      */
+      (_selection) => dragHandler(forceSim),
+    )
+    .on('click', (_event, _d) => {
+      return (
+        d3
+          .zoom()
+          .extent([
+            [0, 0],
+            [innerWidth, innerHeight],
+          ])
+          .scaleExtent([0.1, 8])
+          // "start", "zoom", "end"
+          .on('zoom', (zoomEvent) => {
+            const { transform } = zoomEvent;
 
+            svgContainerGroupG.attr('transform', transform.toString());
+          })
+      );
+    });
+
+  const paintedLinks: gg.Selection<
+    SomeElementForSelection,
+    HappyLink,
+    SVGGElement,
+    unknown
+  > = svgContainerGroupG
+    .append('g')
+    .attr('stroke', '#999')
+    .attr('stroke-opacity', 0.6)
+    .selectAll('line')
+    .data(links)
+    .join('line')
+    .attr('stroke-width', (d) => Math.sqrt(d.value));
+
+  const paintedLabels = svgContainerGroupG
+    .append('g')
+    .selectAll('text')
+    .data(nodes)
+    .join('text')
+    .text((d) => d.id)
+    .attr('fill', 'black')
+    .attr('dy', '0em')
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'middle')
+    .call((_selection: any, ..._args: any[]) => {
+      return d3.drag().on('start', function (this: Element, event: any, _d: any) {
+        event.subject.fx = event.subject.x;
+        event.subject.fy = event.subject.y;
+      });
+    });
+  paintedNodes;
+  paintedLinks;
+  paintedLabels;
+
+  paintedNodes.append('title').text((d) => d.id);
   forceSim.on('tick');
 
   setupRepositioningTickHandler(forceSim, paintedNodes, paintedLinks);
