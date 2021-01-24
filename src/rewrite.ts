@@ -24,3 +24,20 @@ const d3: typeof gg = window.d3;
 // add type anyway
 const sampleData: MiserableNodesLinks = sampleMiserablesDataJson;
 
+/**
+ * 
+ * - FIXME: Remove this if node-radius function overrides this anyway.
+ * 
+ * Radius is more predictable than physics force collision radius
+ * 
+ */
+function getCollisionForce() {
+
+  // 0 radius or pass in a function that generates force per node.
+  const nodeCollisionForceConfig = d3.forceCollide();
+}
+
+function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
+  
+
+} 
