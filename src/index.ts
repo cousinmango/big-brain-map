@@ -11,9 +11,9 @@ import type {
   Transition,
   Selection,
 } from 'd3';
-import { MiserableNodesLinks } from './models/MiserableNodesLinks';
-import { HappyLink } from './models/HappyLink';
-import { HappyNode } from './models/HappyNode';
+import { MiserableNodesLinks } from './models/miserable-nodes-links';
+import { HappyLink } from './models/happy-link';
+import { HappyNode } from './models/happy-node';
 
 const d3 = window.d3;
 

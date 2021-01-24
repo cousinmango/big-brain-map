@@ -1,31 +1,20 @@
 import { HappyLink } from './happy-link';
 import { HappyNode } from './happy-node';
 
-/**
- * @param {MiserableNodesLinks} theMiserableDataNodesLinks
- * Assumed not undefined null
- *
- * @param {HappyNode} newNode
- * @param {HappyLink} newLink
- *
- * @return {{
- *  nodes:
- *    {
- *      id: string,
- *      group: number
- *    }[]
- *  ,
- *  links:
- *    {
- *      source: string,
- *      target: string,
- *      value: number,
- *    }[]
- *
- * }} the new object with nodes array and links array properties
- */
 
+/**
+ * Helper to represent our example json data format
+ */
 export interface MiserableNodesLinks {
-  nodes: HappyNode[];
-  links: HappyLink[];
+  /**
+   * The nodes
+   * Currently uses name as identifier
+   */
+  readonly nodes: HappyNode[];
+  
+  /**
+   * The links between nodes
+   * Source and target are expected to be valid node identifiers (otherwise raises an error on chart generation)
+   */
+  readonly links: HappyLink[];
 }
