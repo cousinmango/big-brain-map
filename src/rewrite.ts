@@ -1,24 +1,24 @@
-import {
-  DraggedElementBaseType,
-  D3DragEvent,
-  Simulation,
-  SimulationLinkDatum,
-  SimulationNodeDatum,
-  D3ZoomEvent,
-  ZoomedElementBaseType,
-  EnterElement,
-  ZoomBehavior,
-  Transition,
-  Selection,
-  forceSimulation,
-} from 'd3';
+// import {
+//   DraggedElementBaseType,
+//   D3DragEvent,
+//   Simulation,
+//   SimulationLinkDatum,
+//   SimulationNodeDatum,
+//   D3ZoomEvent,
+//   ZoomedElementBaseType,
+//   EnterElement,
+//   ZoomBehavior,
+//   Transition,
+//   Selection,
+//   forceSimulation,
+// } from 'd3';
 
 import type * as gg from 'd3';
 import { MiserableNodesLinks } from './models/miserable-nodes-links';
 import { HappyLink } from './models/happy-link';
 import { HappyNode } from './models/happy-node';
-import { happyForceWrap } from './forces/collision-force-config';
-import { miserableData } from './models/miserables-seed';
+import { happyForceWrap } from './forces/collision-force-config.js';
+import { miserableData } from './models/miserables-seed.js';
 
 const d3: typeof gg = window.d3;
 
@@ -57,16 +57,11 @@ function getCollisionFactorFromNameLength({
   return idNameForArbitraryLengthDerivedForce.length * 5;
 }
 
-function getForceLink(links: HappyLink[]) {
-  return d3.forceLink(links);
-}
 function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
   const { nodes, links } = nodesLinksData;
 
   const forceNodeRadius = getCollisionForce();
   const forceSim: gg.Simulation<HappyNode, HappyLink> = d3.forceSimulation(nodes);
-
-  const chargedPhysicsForceSimulation = forceSim.force('link');
 
   // I don't think this wrapping made it clearer
   // Further wrapping could make it clearer but harder to customise...
@@ -91,7 +86,10 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     getCollisionForce(),
   );
 
-  const svg = d3.select('body').append('svg').attr('viewBox', `0 0 ${width} ${height}`);
+  forceNodeRadius;
+  radiusForced;
+
+  const svg = d3.select('body').append('svg').attr('viewBox', `0 0 ${innerWidth} ${innerHeight}`);
   const svgContainerGroupG = svg.append('g');
   const paintedLinks = svgContainerGroupG
     .append('g')
@@ -111,4 +109,9 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     .join('circle')
     .attr('id', (d) => d.id)
     .attr('r', (d) => d.id.length * 4);
+
+  paintedLinks;
+  paintedNodes;
 }
+
+drawChartFromData(sampleData);
