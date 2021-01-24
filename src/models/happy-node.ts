@@ -1,10 +1,11 @@
+import { SimulationNodeDatum } from "d3";
 
 /**
  * Contain node data for use in D3
  * Care should be taken as D3 adds and modifies object values downstream
  * 
  */
-export interface HappyNode {
+export interface HappyNode extends SimulationNodeDatum {
   /**
    * Currently uses name as the identifier
    * - TODO: Future should have proper UUID and separate name properties.
