@@ -87,4 +87,25 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     'collisionForce',
     getCollisionForce(),
   );
+
+  const svg = d3.select('body').append('svg').attr('viewBox', `0 0 ${width} ${height}`);
+  const svgContainerGroupG = svg.append('g');
+  const paintedLinks = svgContainerGroupG
+    .append('g')
+    .attr('stroke', '#999')
+    .attr('stroke-opacity', 0.6)
+    .selectAll('line')
+    .data(links)
+    .join('line')
+    .attr('stroke-width', (d) => Math.sqrt(d.value));
+
+  const paintedNodes = svgContainerGroupG
+    .append('g')
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 1.5)
+    .selectAll('circle')
+    .data(nodes)
+    .join('circle')
+    .attr('id', (d) => d.id)
+    .attr('r', (d) => d.id.length * 4);
 }
