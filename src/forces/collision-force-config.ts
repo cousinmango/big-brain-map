@@ -1,6 +1,8 @@
 import type { Force, Simulation, SimulationLinkDatum, SimulationNodeDatum } from "d3";
 
-/// Use string literals to help autocomplete defined D3 usages rather than any string.
+/**
+ * Use string literals to help autocomplete defined D3 usages rather than any string.
+ */
 type DefinedForce = 'link' | 'charge' | 'center' | 'collisionForce';
 
 /**
@@ -15,3 +17,21 @@ function utilityUseTheForceWrapper<N extends SimulationNodeDatum, L extends Simu
   
   return simulation.force(name, force);
 }
+
+// Not sure of an easy way to extend and override *implementation* of D3 with TypeScript declared interface
+// Ideally: have .forceWrapper as an in-place upgrade to .force
+// force is a function defined in simulation return js
+// interface only has interface declarations (no place to override implementation)
+// Looking at source
+// Var simulation return simulation...
+// 
+// export interface WrapperSimulation<
+//   NodeDatum extends SimulationNodeDatum,
+//   LinkDatum extends SimulationLinkDatum<NodeDatum> | undefined
+// > extends gg.Simulation<NodeDatum, LinkDatum> {
+  
+//   forceWrapper(name: DefinedForce, force: gg.Force<SimulationNodeDatum, SimulationLinkDatum<SimulationNodeDatum>>): any {
+//     return this.force(name, force);
+//   }
+// }
+// declare module extendedD3 {}
