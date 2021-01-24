@@ -56,6 +56,70 @@ function getCollisionFactorFromNameLength({
 }: HappyNode): number {
   return idNameForArbitraryLengthDerivedForce.length * 5;
 }
+type SomeElementForSelection =
+  | Window
+  | Document
+  | Element
+  | gg.EnterElement
+  | SVGCircleElement
+  | null;
+
+type AliasedLinkSelection = gg.Selection<
+  // Selected element
+  SomeElementForSelection,
+  // Current datum
+  HappyLink,
+  // Parent group should all be the svg g
+  SVGGElement,
+  // Parent datum. I don't think we have parents here
+  unknown
+>;
+type AliasedNodeSelection = gg.Selection<
+  // Selected element
+  SomeElementForSelection,
+  // Current datum
+  HappyNode,
+  // Parent group should all be the svg g
+  SVGGElement,
+  // Parent datum. I don't think we have parents here
+  unknown
+>;
+
+type AliasedNodeOrLinkSelection<D extends HappyNode | HappyLink> = gg.Selection<
+  // Selected element
+  SomeElementForSelection,
+  // Current datum. Should be data model for either our node or our link.
+  D,
+  // Parent group should all be the svg g
+  SVGGElement,
+  // Parent datum. I don't think we have parents here
+  unknown
+>;
+
+/**
+ * Do things on each tick of the sim
+ * Positions I think
+ * may do other things though
+ *
+ */
+function setupRepositioningTickHandler(
+  simulation: gg.Simulation<HappyNode, HappyLink>,
+  nodeSelection: AliasedNodeSelection | AliasedNodeOrLinkSelection<HappyNode>,
+  linkSelection: AliasedLinkSelection,
+): void {
+  simulation.on('tick', () => {
+    nodeSelection.attr('cx', (node) => node.x ?? 0)
+    nodeSelection.attr('cy', (node) => node.y ?? 0)
+    
+    linkSelection.attr('x1', (node) => (node.source as unknown as HappyNode).x ?? 0)
+    linkSelection.attr('y1', (node) => (node.source as unknown as HappyNode).y ?? 0)
+    linkSelection.attr('x2', (node) => (node.target as unknown as HappyNode).x ?? 0)
+    linkSelection.attr('y2', (node) => (node.target as unknown as HappyNode).y ?? 0)
+
+
+    ;
+  });
+}
 
 function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
   const { nodes, links } = nodesLinksData;
@@ -80,11 +144,7 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     'center',
     d3.forceCenter(innerWidth / 2, innerHeight / 2),
   );
-  const radiusForced = happyForceWrap(
-    forceSim,
-    'collisionForce',
-    getCollisionForce(),
-  );
+  const radiusForced = happyForceWrap(forceSim, 'collisionForce', getCollisionForce());
   linked;
   charged;
   centeredWithinViewport;
@@ -93,7 +153,13 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
 
   const svg = d3.select('body').append('svg').attr('viewBox', `0 0 ${innerWidth} ${innerHeight}`);
   const svgContainerGroupG = svg.append('g');
-  const paintedLinks = svgContainerGroupG
+
+  const paintedLinks: gg.Selection<
+    SomeElementForSelection,
+    HappyLink,
+    SVGGElement,
+    unknown
+  > = svgContainerGroupG
     .append('g')
     .attr('stroke', '#999')
     .attr('stroke-opacity', 0.6)
@@ -102,7 +168,12 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     .join('line')
     .attr('stroke-width', (d) => Math.sqrt(d.value));
 
-  const paintedNodes = svgContainerGroupG
+  const paintedNodes: gg.Selection<
+    SomeElementForSelection,
+    HappyNode,
+    SVGGElement,
+    unknown
+  > = svgContainerGroupG
     .append('g')
     .attr('stroke', '#fff')
     .attr('stroke-width', 1.5)
@@ -114,6 +185,10 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
 
   paintedLinks;
   paintedNodes;
+
+  forceSim.on('tick');
+
+  setupRepositioningTickHandler(forceSim, paintedNodes, paintedLinks);
 }
 
 drawChartFromData(sampleData);
