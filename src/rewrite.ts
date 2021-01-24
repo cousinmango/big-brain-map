@@ -25,19 +25,40 @@ const d3: typeof gg = window.d3;
 const sampleData: MiserableNodesLinks = sampleMiserablesDataJson;
 
 /**
- * 
+ *
  * - FIXME: Remove this if node-radius function overrides this anyway.
- * 
+ *
  * Radius is more predictable than physics force collision radius
- * 
+ *
+ * @returns a function that generates collision force based on node data
+ * iterated within the simulation
  */
-function getCollisionForce() {
-
+function getCollisionForce(): gg.ForceCollide<HappyNode> {
   // 0 radius or pass in a function that generates force per node.
-  const nodeCollisionForceConfig = d3.forceCollide();
+  const nodeCollisionForceConfig = d3.forceCollide(getCollisionFactorFromNameLength);
+
+  return nodeCollisionForceConfig;
+}
+
+
+/**
+ * Arbitrarily create a collision radius force based on the node value (name length)
+ * ?
+ * Not sure if we need this
+ *
+ */
+function getCollisionFactorFromNameLength({
+  id: idNameForArbitraryLengthDerivedForce,
+}: HappyNode): number {
+  return idNameForArbitraryLengthDerivedForce.length * 5;
 }
 
 function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
-  
+  const { nodes, links } = nodesLinksData;
 
-} 
+  const forceNodeRadius = getCollisionForce();
+  const forceSimulation: gg.Simulation<HappyNode, HappyLink> = d3.forceSimulation(nodes);
+
+  const chargedPhysicsForceSimulation = forceSimulation.force('link');
+
+}
