@@ -19,6 +19,7 @@ import { HappyLink } from './models/happy-link';
 import { HappyNode } from './models/happy-node';
 import { happyForceWrap } from './forces/collision-force-config.js';
 import { miserableData } from './models/miserables-seed.js';
+import { DraggedElementBaseType } from 'd3';
 
 const d3: typeof gg = window.d3;
 
@@ -108,17 +109,53 @@ function setupRepositioningTickHandler(
   linkSelection: AliasedLinkSelection,
 ): void {
   simulation.on('tick', () => {
-    nodeSelection.attr('cx', (node) => node.x ?? 0)
-    nodeSelection.attr('cy', (node) => node.y ?? 0)
-    
-    linkSelection.attr('x1', (node) => (node.source as unknown as HappyNode).x ?? 0)
-    linkSelection.attr('y1', (node) => (node.source as unknown as HappyNode).y ?? 0)
-    linkSelection.attr('x2', (node) => (node.target as unknown as HappyNode).x ?? 0)
-    linkSelection.attr('y2', (node) => (node.target as unknown as HappyNode).y ?? 0)
+    nodeSelection.attr('cx', (node) => node.x ?? 0);
+    nodeSelection.attr('cy', (node) => node.y ?? 0);
 
-
-    ;
+    linkSelection.attr('x1', (node) => ((node.source as unknown) as HappyNode).x ?? 0);
+    linkSelection.attr('y1', (node) => ((node.source as unknown) as HappyNode).y ?? 0);
+    linkSelection.attr('x2', (node) => ((node.target as unknown) as HappyNode).x ?? 0);
+    linkSelection.attr('y2', (node) => ((node.target as unknown) as HappyNode).y ?? 0);
   });
+}
+type SelectionHandler = (
+  selection: gg.Selection<SomeElementForSelection, HappyNode, SVGGElement, unknown>,
+  ...args: any[]
+) => void;
+let abc: SelectionHandler | undefined = undefined;
+abc;
+
+type HappySimulation = d3.Simulation<HappyNode, HappyLink>;
+
+/**
+ * Sets fixed positioning!
+ * @param simulation sim
+ * @param event uhh I think we used the datum together into the sim node
+ * See HappyNode datum and HappyNode drag behaviour subject
+ */
+function handleDragStartEventSubjectNodePositioning(
+  simulation: HappySimulation,
+  event: d3.D3DragEvent<DraggedElementBaseType, HappyNode, HappyNode>,
+): void {
+  const isEventInactive = !event.active;
+  if (isEventInactive) {
+    simulation.alphaTarget(0.3).restart();
+    // Have not reproduced this behaviour.
+    // Not sure if this should escape early or continue with start dragging
+  }
+  // Set new fixed position
+  event.subject.fx = event.x;
+  event.subject.fy = event.y;
+}
+/**
+ * Drag handler
+ * Handles the start, drag (continuous) and end
+ * @param draggedNodeSelection
+ */
+function dragHandler(simulation: HappySimulation, draggedNodeSelection: AliasedNodeSelection) {
+
+
+
 }
 
 function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
@@ -181,8 +218,8 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     .data(nodes)
     .join('circle')
     .attr('id', (d) => d.id)
-    .attr('r', (d) => d.id.length * 4);
-
+    .attr('r', (d) => d.id.length * 4)
+    .call();
   paintedLinks;
   paintedNodes;
 
