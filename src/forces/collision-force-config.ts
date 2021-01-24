@@ -1,20 +1,30 @@
-import type { Force, Simulation, SimulationLinkDatum, SimulationNodeDatum } from "d3";
+import type { Force, Simulation, SimulationLinkDatum, SimulationNodeDatum } from 'd3';
+import { HappyLink } from 'src/models/happy-link';
+import { HappyNode } from 'src/models/happy-node';
 
 /**
  * Use string literals to help autocomplete defined D3 usages rather than any string.
  */
 type DefinedForce = 'link' | 'charge' | 'center' | 'collisionForce';
 
+export function happyForceWrap(
+  simulation: Simulation<HappyNode, HappyLink>,
+  name: DefinedForce,
+  force: Force<HappyNode, HappyLink>,
+): Simulation<HappyNode, HappyLink> {
+  return utilityUseTheForceWrapper(simulation, name, force);
+}
 /**
  * Use the force
  * the chained .force calls on force simulations
  */
-export function utilityUseTheForceWrapper<N extends SimulationNodeDatum, L extends SimulationLinkDatum<N> >(
-  simulation: Simulation<N, L>,
+export function utilityUseTheForceWrapper<
+  N extends SimulationNodeDatum,
+  L extends SimulationLinkDatum<N>
+>(simulation: Simulation<N, L>,
   name: DefinedForce,
-  force: Force<N, L>,
-): Simulation<N, L>  {
-  
+  force: Force<N, L>
+): Simulation<N, L> {
   return simulation.force(name, force);
 }
 
@@ -24,12 +34,12 @@ export function utilityUseTheForceWrapper<N extends SimulationNodeDatum, L exten
 // interface only has interface declarations (no place to override implementation)
 // Looking at source
 // Var simulation return simulation...
-// 
+//
 // export interface WrapperSimulation<
 //   NodeDatum extends SimulationNodeDatum,
 //   LinkDatum extends SimulationLinkDatum<NodeDatum> | undefined
 // > extends gg.Simulation<NodeDatum, LinkDatum> {
-  
+
 //   forceWrapper(name: DefinedForce, force: gg.Force<SimulationNodeDatum, SimulationLinkDatum<SimulationNodeDatum>>): any {
 //     return this.force(name, force);
 //   }
