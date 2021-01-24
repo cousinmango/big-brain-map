@@ -109,6 +109,13 @@ type AliasedNodeOrLinkSelection<D extends HappyNode | HappyLink> = gg.Selection<
   unknown
 >;
 
+type AliasedLabelSelection = gg.Selection<
+  Element | gg.EnterElement | Document | Window | SVGTextElement | null,
+  HappyNode,
+  SVGGElement,
+  unknown
+>;
+
 /**
  * Do things on each tick of the sim
  * Positions I think
@@ -119,15 +126,20 @@ function setupRepositioningTickHandler(
   simulation: gg.Simulation<HappyNode, HappyLink>,
   nodeSelection: AliasedNodeSelection | AliasedNodeOrLinkSelection<HappyNode>,
   linkSelection: AliasedLinkSelection,
+  labelSelection: AliasedLabelSelection,
 ): void {
   simulation.on('tick', () => {
     nodeSelection.attr('cx', (node) => node.x ?? 0);
     nodeSelection.attr('cy', (node) => node.y ?? 0);
 
-    linkSelection.attr('x1', (node) => ((node.source as unknown) as HappyNode).x ?? 0);
-    linkSelection.attr('y1', (node) => ((node.source as unknown) as HappyNode).y ?? 0);
-    linkSelection.attr('x2', (node) => ((node.target as unknown) as HappyNode).x ?? 0);
-    linkSelection.attr('y2', (node) => ((node.target as unknown) as HappyNode).y ?? 0);
+    linkSelection
+      .attr('x1', (node) => ((node.source as unknown) as HappyNode).x ?? 0)
+      .attr('y1', (node) => ((node.source as unknown) as HappyNode).y ?? 0)
+      .attr('x2', (node) => ((node.target as unknown) as HappyNode).x ?? 0)
+      .attr('y2', (node) => ((node.target as unknown) as HappyNode).y ?? 0);
+
+    labelSelection.attr('x', (d) => d.x ?? 0);
+    labelSelection.attr('y', (d) => d.y ?? 0);
   });
 }
 type SelectionHandler = (
@@ -337,7 +349,7 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
   paintedNodes.append('title').text((d) => d.id);
   forceSim.on('tick');
 
-  setupRepositioningTickHandler(forceSim, paintedNodes, paintedLinks);
+  setupRepositioningTickHandler(forceSim, paintedNodes, paintedLinks, paintedLabels);
 }
 
 drawChartFromData(sampleData);
