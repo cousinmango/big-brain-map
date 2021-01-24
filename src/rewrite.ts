@@ -17,14 +17,17 @@ import type * as gg from 'd3';
 import { MiserableNodesLinks } from './models/miserable-nodes-links';
 import { HappyLink } from './models/happy-link';
 import { HappyNode } from './models/happy-node';
-import { happyForceWrap, utilityUseTheForceWrapper } from './forces/collision-force-config';
-import sampleMiserablesDataJson from './models/miserables.json';
+import { happyForceWrap } from './forces/collision-force-config';
+import { miserableData } from './models/miserables-seed';
 
 const d3: typeof gg = window.d3;
 
 // TypeScript language server actually does a good job inferring types directly from json file
 // add type anyway
-const sampleData: MiserableNodesLinks = sampleMiserablesDataJson;
+// Oops now I remember why we didn't do this earlier.. Compatibility
+// JavaScript MIME type of "application/json".
+// Strict MIME type checking is enforced for module scripts per HTML spec.
+const sampleData: MiserableNodesLinks = miserableData;
 
 /**
  *
