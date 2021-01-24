@@ -1,5 +1,5 @@
-import { HappyLink } from './HappyLink';
-import { HappyNode } from './HappyNode';
+import { HappyLink } from './happy-link';
+import { HappyNode } from './happy-node';
 
 /* eslint-enable no-unused-vars */
 /**
