@@ -74,18 +74,20 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
       .id((node) => node.id)
       .distance(1),
   );
-  const charged = happyForceWrap(linked, 'charge', d3.forceManyBody<HappyNode>().strength(-500));
+  const charged = happyForceWrap(forceSim, 'charge', d3.forceManyBody<HappyNode>().strength(-500));
   const centeredWithinViewport = happyForceWrap(
-    charged,
+    forceSim,
     'center',
     d3.forceCenter(innerWidth / 2, innerHeight / 2),
   );
   const radiusForced = happyForceWrap(
-    centeredWithinViewport,
+    forceSim,
     'collisionForce',
     getCollisionForce(),
   );
-
+  linked;
+  charged;
+  centeredWithinViewport;
   forceNodeRadius;
   radiusForced;
 
