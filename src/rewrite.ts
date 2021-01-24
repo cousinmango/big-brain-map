@@ -17,7 +17,7 @@ import type * as gg from 'd3';
 import { MiserableNodesLinks } from './models/miserable-nodes-links';
 import { HappyLink } from './models/happy-link';
 import { HappyNode } from './models/happy-node';
-import { utilityUseTheForceWrapper } from './forces/collision-force-config';
+import { happyForceWrap, utilityUseTheForceWrapper } from './forces/collision-force-config';
 import sampleMiserablesDataJson from './models/miserables.json';
 
 const d3: typeof gg = window.d3;
@@ -64,7 +64,11 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
   const forceSim: gg.Simulation<HappyNode, HappyLink> = d3.forceSimulation(nodes);
 
   const chargedPhysicsForceSimulation = forceSim.force('link');
-  const linked = utilityUseTheForceWrapper<HappyNode, HappyLink>(
+
+  // I don't think this wrapping made it clearer
+  // Further wrapping could make it clearer but harder to customise...
+  // Fixes typeing.
+  const linked = happyForceWrap(
     forceSim,
     'link',
     d3
@@ -72,19 +76,15 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
       .id((node) => node.id)
       .distance(1),
   );
-  const charged = utilityUseTheForceWrapper<HappyNode, HappyLink>(
-    linked,
-    'charge',
-    d3.forceManyBody<HappyNode>().strength(-500),
-  );
-  const centeredWithinViewport = utilityUseTheForceWrapper<HappyNode, HappyLink>(
+  const charged = happyForceWrap(linked, 'charge', d3.forceManyBody<HappyNode>().strength(-500));
+  const centeredWithinViewport = happyForceWrap(
     charged,
     'center',
     d3.forceCenter(innerWidth / 2, innerHeight / 2),
   );
-  const radiusForced = utilityUseTheForceWrapper<HappyNode, HappyLink>( 
+  const radiusForced = happyForceWrap(
     centeredWithinViewport,
     'collisionForce',
-    getCollisionForce()
-  )
+    getCollisionForce(),
+  );
 }
