@@ -1,7 +1,6 @@
 import { HappyLink } from './happy-link';
 import { HappyNode } from './happy-node';
 
-/* eslint-enable no-unused-vars */
 /**
  * @param {MiserableNodesLinks} theMiserableDataNodesLinks
  * Assumed not undefined null
