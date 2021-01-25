@@ -6,6 +6,7 @@ import type {
   SimulationNodeDatum,
   EnterElement,
   DragBehavior,
+  SubjectPosition,
 } from 'd3';
 import { HappySimulation } from 'src/models/happy-simulation';
 import { HappyNodeDragEvent } from 'src/rewrite';
@@ -80,7 +81,7 @@ export function getDragBehaviour<
  * @param event uhh I think we used the datum together into the sim node
  * See HappyNode datum and HappyNode drag behaviour subject
  */
-function handleDragStartEventSubjectNodePositioning(
+export function handleDragStartEventSubjectNodePositioning(
   simulation: HappySimulation,
   event: HappyNodeDragEvent,
 ): void {
@@ -98,11 +99,11 @@ function handleDragStartEventSubjectNodePositioning(
  * Presumably while dragging.
  * @param event while dragging
  */
-function handleDragDraggingEventSubjectNodePositioning(event: HappyNodeDragEvent) {
+export function handleDragDraggingEventSubjectNodePositioning(event: HappyNodeDragEvent) {
   event.subject.fx = event.x;
   event.subject.fy = event.y;
 }
-function handleDragEndStopRepositioning(simulation: HappySimulation, event: HappyNodeDragEvent) {
+export function handleDragEndStopRepositioning(simulation: HappySimulation, event: HappyNodeDragEvent) {
   const isEventInactive = !event.active;
 
   if (isEventInactive) {
@@ -120,9 +121,9 @@ function handleDragEndStopRepositioning(simulation: HappySimulation, event: Happ
  * If it needs null, does that mean it keeps ticking the other events?
  * If it keeps ticking other events, does it need to be set every time?
  */
-function dragHandler(
+export function dragHandler(
   simulation: HappySimulation,
-): DragBehavior<Element, HappyNode, HappyNode | gg.SubjectPosition> {
+): DragBehavior<Element, HappyNode, HappyNode | SubjectPosition> {
   // Probably do not even need all of the handlers
   // it simply sets the positions to the event drag positions
   // so the lack of a setter is likely sufficient for end.
