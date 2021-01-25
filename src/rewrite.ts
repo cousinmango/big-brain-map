@@ -14,12 +14,15 @@
 // } from 'd3';
 
 import type * as gg from 'd3';
+// Types are not transpiled in tsc -> .js
 import { MiserableNodesLinks } from './models/miserable-nodes-links';
 import { HappyLink } from './models/happy-link';
 import { HappyNode } from './models/happy-node';
+// - NOTE: import with file extensions .js for any functional imports when using tsc transpiler.
 import { happyForceWrap } from './forces/collision-force-config.js';
 import { miserableData } from './models/miserables-seed.js';
 import { DraggedElementBaseType } from 'd3';
+import { getDragBehaviour } from './behaviours/drag-behaviours.js';
 
 const d3: typeof gg = window.d3;
 
@@ -300,13 +303,12 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     .join('circle')
     .attr('id', (d) => d.id)
     .attr('r', (d) => d.id.length * 4)
-    .attr('fill', (d, _index, _groups) => getScaledColourValueFromNodeGroup(d))
-    .call(
-      /*
-      Maybe it is missing the `this` context?
-      */
-      (_selection) => dragHandler(forceSim),
-    )
+      .attr('fill', (d, _index, _groups) => getScaledColourValueFromNodeGroup(d))
+      
+
+      
+      .call(getDragBehaviour(forceSim))
+
     .on('click', (_event, _d) => {
       return (
         d3
@@ -337,7 +339,10 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     .selectAll('line')
     .data(links)
     .join('line')
-    .attr('stroke-width', (d) => Math.sqrt(d.value));
+      .attr('stroke-width', (d) => Math.sqrt(d.value))
+    
+    
+    ;
 
   const paintedLabels = svgContainerGroupG
     .append('g')
@@ -350,10 +355,7 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'middle')
     .call((_selection: any, ..._args: any[]) => {
-      return d3.drag().on('start', function (this: Element, event: any, _d: any) {
-        event.subject.fx = event.subject.x;
-        event.subject.fy = event.subject.y;
-      });
+      return getDragBehaviour(forceSim)(_selection, _args);
     });
   paintedNodes;
   paintedLinks;
