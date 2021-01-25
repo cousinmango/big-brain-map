@@ -23,9 +23,8 @@ import { happyForceWrap } from './forces/collision-force-config.js';
 import { miserableData } from './models/miserables-seed.js';
 import { DraggedElementBaseType } from 'd3';
 import { getDragBehaviour } from './behaviours/drag-behaviours.js';
-import type { HappySimulation } from './models/happy-simulation';
 
-const d3: typeof gg = window.d3;
+export const d3: typeof gg = window.d3;
 
 // TypeScript language server actually does a good job inferring types directly from json file
 // add type anyway
@@ -164,95 +163,7 @@ type SelectionHandler = (
 let abc: SelectionHandler | undefined = undefined;
 abc;
 
-type HappyNodeDragEvent = d3.D3DragEvent<DraggedElementBaseType, HappyNode, HappyNode>;
-// /**
-//  * Setter mutator to reuse in the drag handlers
-//  * As each function seems to replicate the same setting functionality
-//  * @param nodeDragEvent drag event to get the drag positioning and current nodes
-//  */
-// function setDragSubjectPositionFromDragEvent(nodeDragEvent: HappyNodeDragEvent) {
-//   const { x: dragEventX, y: dragEventY, subject }: HappyNodeDragEvent = nodeDragEvent;
-
-//   // Setters
-//   subject.fx = dragEventX;
-//   subject.fy = dragEventY;
-// }
-
-// /**
-//  * Hover doco doesn't explain null vs undefined vs not setting.
-//  * @param param0 subject
-//  */
-// function setDragSubjectNullPosition({ subject }: HappyNodeDragEvent) {
-//   subject.fx = null;
-//   subject.fy = null;
-// }
-
-/**
- * Sets fixed positioning!
- * @param simulation sim
- * @param event uhh I think we used the datum together into the sim node
- * See HappyNode datum and HappyNode drag behaviour subject
- */
-function handleDragStartEventSubjectNodePositioning(
-  simulation: HappySimulation,
-  event: HappyNodeDragEvent,
-): void {
-  const isEventInactive = !event.active;
-  if (isEventInactive) {
-    simulation.alphaTarget(0.3).restart();
-    // Have not reproduced this behaviour.
-    // Not sure if this should escape early or continue with start dragging
-  }
-  // Set new fixed position
-  event.subject.fx = event.subject.x;
-  event.subject.fy = event.subject.y;
-}
-/**
- * Presumably while dragging.
- * @param event while dragging
- */
-function handleDragDraggingEventSubjectNodePositioning(event: HappyNodeDragEvent) {
-  event.subject.fx = event.x;
-  event.subject.fy = event.y;
-}
-
-function handleDragEndStopRepositioning(simulation: HappySimulation, event: HappyNodeDragEvent) {
-  const isEventInactive = !event.active;
-
-  if (isEventInactive) {
-    simulation.alphaTarget(0);
-  }
-  event.subject.fx = null;
-  event.subject.fy = null;
-}
-/**
- * Drag handler
- * Handles the start, drag (continuous) and end
- *
- * Not sure if it needs explicit handling for all drag events
- * Null vs mutating subject position every time...
- * If it needs null, does that mean it keeps ticking the other events?
- * If it keeps ticking other events, does it need to be set every time?
- */
-function dragHandler(
-  simulation: HappySimulation,
-  /* 
-  draggedNodeSelection: AliasedNodeSelection 
-  */
-): gg.DragBehavior<Element, HappyNode, HappyNode | gg.SubjectPosition> {
-  // Probably do not even need all of the handlers
-  // it simply sets the positions to the event drag positions
-  // so the lack of a setter is likely sufficient for end.
-  // Not sure if special behaviour needed in the start condition. Otherwise looks identical to
-  // the drag-drag
-
-  return d3
-    .drag<Element, HappyNode>()
-    .on('start', (event, _d) => handleDragStartEventSubjectNodePositioning(simulation, event))
-    .on('drag', handleDragDraggingEventSubjectNodePositioning)
-    .on('end', (event, _d) => handleDragEndStopRepositioning(simulation, event));
-}
-
+export type HappyNodeDragEvent = d3.D3DragEvent<DraggedElementBaseType, HappyNode, HappyNode>;
 function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
   const { nodes, links } = nodesLinksData;
 
