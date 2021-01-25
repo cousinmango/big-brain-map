@@ -12,7 +12,7 @@ import type {
 import { MiserableNodesLinks } from './models/miserable-nodes-links';
 import { HappyLink } from './models/happy-link';
 import { HappyNode } from './models/happy-node';
-import { getDragBehaviour } from './behaviours/drag-behaviours';
+import { getDragBehaviour } from './behaviours/drag-behaviours.js';
 
 export const d3 = window.d3;
 
