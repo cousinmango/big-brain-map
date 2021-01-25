@@ -5,7 +5,7 @@ import type {
   SimulationLinkDatum,
   SimulationNodeDatum,
   EnterElement,
-  DragBehavior
+  DragBehavior,
 } from 'd3';
 import { HappySimulation } from 'src/models/happy-simulation';
 import { HappyNodeDragEvent } from 'src/rewrite';
@@ -25,18 +25,18 @@ import { HappyNode } from '../models/happy-node';
  *
  */
 export function getDragBehaviour(
-  simulation: Simulation<SimulationNodeDatum, SimulationLinkDatum<SimulationNodeDatum>>): (
-    selection: d3.Selection<
-      Window | Document | Element | EnterElement | SVGCircleElement | null,
-      HappyNode,
-      SVGGElement,
-      unknown
-    >,
-    ...args: any[]
-  ) => void /* d3.DragBehavior<Element & (Window | Document | EnterElement | SVGCircleElement), any, any> */ {
+  simulation: Simulation<SimulationNodeDatum, SimulationLinkDatum<SimulationNodeDatum>>,
+): (
+  selection: d3.Selection<
+    Window | Document | Element | EnterElement | SVGCircleElement | null,
+    HappyNode,
+    SVGGElement,
+    unknown
+  >,
+  ...args: any[]
+) => void /* d3.DragBehavior<Element & (Window | Document | EnterElement | SVGCircleElement), any, any> */ {
   function dragStarted(event: d3.D3DragEvent<DraggedElementBaseType, SimulationNodeDatum, any>) {
-    if (!event.active)
-      simulation.alphaTarget(0.3).restart();
+    if (!event.active) simulation.alphaTarget(0.3).restart();
     event.subject.fx = event.subject.x;
     event.subject.fy = event.subject.y;
   }
@@ -57,8 +57,7 @@ export function getDragBehaviour(
    * @param {import("d3").D3DragEvent} event
    */
   function dragEnded(event: D3DragEvent<DraggedElementBaseType, SimulationNodeDatum, any>) {
-    if (!event.active)
-      simulation.alphaTarget(0);
+    if (!event.active) simulation.alphaTarget(0);
     event.subject.fx = null;
     event.subject.fy = null;
   }
@@ -68,7 +67,6 @@ export function getDragBehaviour(
   // @ts-ignore
   return d3.drag().on('start', dragStarted).on('drag', dragged).on('end', dragEnded);
 }
-
 
 // /**
 //  * Setter mutator to reuse in the drag handlers
@@ -97,7 +95,7 @@ export function getDragBehaviour(
  */
 function handleDragStartEventSubjectNodePositioning(
   simulation: HappySimulation,
-  event: HappyNodeDragEvent
+  event: HappyNodeDragEvent,
 ): void {
   const isEventInactive = !event.active;
   if (isEventInactive) {
@@ -136,7 +134,7 @@ function handleDragEndStopRepositioning(simulation: HappySimulation, event: Happ
  * If it keeps ticking other events, does it need to be set every time?
  */
 function dragHandler(
-  simulation: HappySimulation
+  simulation: HappySimulation,
 ): DragBehavior<Element, HappyNode, HappyNode | gg.SubjectPosition> {
   // Probably do not even need all of the handlers
   // it simply sets the positions to the event drag positions
