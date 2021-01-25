@@ -23,6 +23,7 @@ import { happyForceWrap } from './forces/collision-force-config.js';
 import { miserableData } from './models/miserables-seed.js';
 import { DraggedElementBaseType } from 'd3';
 import { getDragBehaviour } from './behaviours/drag-behaviours.js';
+import type { HappySimulation } from './models/happy-simulation';
 
 const d3: typeof gg = window.d3;
 
@@ -162,8 +163,6 @@ type SelectionHandler = (
 ) => void;
 let abc: SelectionHandler | undefined = undefined;
 abc;
-
-type HappySimulation = d3.Simulation<HappyNode, HappyLink>;
 
 type HappyNodeDragEvent = d3.D3DragEvent<DraggedElementBaseType, HappyNode, HappyNode>;
 // /**
