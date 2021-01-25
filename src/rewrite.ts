@@ -31,14 +31,25 @@ const d3: typeof gg = window.d3;
 const sampleData: MiserableNodesLinks = miserableData;
 
 /**
+ * It is a bit weird that it is not deterministic when
+ * The typings show readonlyarray
+ * Strange domain mutable behaviour
+ */
+const initialisedImmutableColourScale: gg.ScaleOrdinal<string, string, never> = d3.scaleOrdinal(
+  d3.schemeCategory10,
+);
+/**
  * Scales the data node .group value into arbitrary hexadecimal strings
  * (for colour values)
  * e.g 1 = #00000 2 = #1f1f1f 10 = #ffffff
  */
-function getScaledColourValueFromNodeGroup(d: HappyNode): string {
+function getScaledColourValueFromNodeGroup(
+  d: HappyNode,
+  scale: gg.ScaleOrdinal<string, string, string> = initialisedImmutableColourScale,
+): string {
   // An array of ten categorical colors represented as RGB hexadecimal strings.
-  const scale = d3.scaleOrdinal(d3.schemeCategory10);
-
+  console.log(d.group, `${d.group}`, scale(`${d.group}`), scale(`1`), scale(`${d.group}`));
+  // "#1f77b4"
   return scale(`${d.group}`);
 }
 
@@ -273,6 +284,8 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
   const svg = d3.select('body').append('svg').attr('viewBox', `0 0 ${innerWidth} ${innerHeight}`);
   const svgContainerGroupG = svg.append('g');
 
+  const colourScale: gg.ScaleOrdinal<string, string, never> = d3.scaleOrdinal(d3.schemeCategory10);
+  colourScale;
   const paintedNodes: gg.Selection<
     SomeElementForSelection,
     HappyNode,
@@ -287,7 +300,7 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     .join('circle')
     .attr('id', (d) => d.id)
     .attr('r', (d) => d.id.length * 4)
-    .attr('fill', getScaledColourValueFromNodeGroup)
+    .attr('fill', (d, _index, _groups) => getScaledColourValueFromNodeGroup(d))
     .call(
       /*
       Maybe it is missing the `this` context?
