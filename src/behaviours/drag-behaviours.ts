@@ -8,6 +8,7 @@ import type {
   DragBehavior,
   SubjectPosition,
 } from 'd3';
+import * as d3 from 'd3';
 import { HappySimulation } from 'src/models/happy-simulation';
 import { HappyNodeDragEvent } from 'src/rewrite';
 import { HappyNode } from '../models/happy-node';
@@ -103,7 +104,10 @@ export function handleDragDraggingEventSubjectNodePositioning(event: HappyNodeDr
   event.subject.fx = event.x;
   event.subject.fy = event.y;
 }
-export function handleDragEndStopRepositioning(simulation: HappySimulation, event: HappyNodeDragEvent) {
+export function handleDragEndStopRepositioning(
+  simulation: HappySimulation,
+  event: HappyNodeDragEvent,
+) {
   const isEventInactive = !event.active;
 
   if (isEventInactive) {
