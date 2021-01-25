@@ -15,17 +15,14 @@ import { HappyNode } from '../models/happy-node';
 /**
  *
  * @param {d3.Simulation<d3.SimulationNodeDatum>} simulation
- * @return {d3.DragBehavior<
- *  Element | Window | Document | import("d3").EnterElement | SVGCircleElement,
- *  any,
- *  any
- * >
- * }
- *
+ * @returns some mutable(?) drag event listeners?
  *
  */
-export function getDragBehaviour(
-  simulation: Simulation<SimulationNodeDatum, SimulationLinkDatum<SimulationNodeDatum>>,
+export function getDragBehaviour<
+  ND extends SimulationNodeDatum,
+  LD extends SimulationLinkDatum<ND>
+>(
+  simulation: Simulation<ND, LD>,
 ): (
   selection: d3.Selection<
     Window | Document | Element | EnterElement | SVGCircleElement | null,
@@ -34,29 +31,19 @@ export function getDragBehaviour(
     unknown
   >,
   ...args: any[]
-) => void /* d3.DragBehavior<Element & (Window | Document | EnterElement | SVGCircleElement), any, any> */ {
-  function dragStarted(event: d3.D3DragEvent<DraggedElementBaseType, SimulationNodeDatum, any>) {
+) => void {
+  function dragStarted(event: d3.D3DragEvent<DraggedElementBaseType, ND, any>) {
     if (!event.active) simulation.alphaTarget(0.3).restart();
     event.subject.fx = event.subject.x;
     event.subject.fy = event.subject.y;
   }
 
-  // eslint-disable-next-line valid-jsdoc
-  /**
-   *
-   * @param {import("d3").D3DragEvent} event
-   */
-  function dragged(event: D3DragEvent<DraggedElementBaseType, SimulationNodeDatum, any>) {
+  function dragged(event: D3DragEvent<DraggedElementBaseType, ND, any>) {
     event.subject.fx = event.x;
     event.subject.fy = event.y;
   }
 
-  // eslint-disable-next-line valid-jsdoc
-  /**
-   *
-   * @param {import("d3").D3DragEvent} event
-   */
-  function dragEnded(event: D3DragEvent<DraggedElementBaseType, SimulationNodeDatum, any>) {
+  function dragEnded(event: D3DragEvent<DraggedElementBaseType, ND, any>) {
     if (!event.active) simulation.alphaTarget(0);
     event.subject.fx = null;
     event.subject.fy = null;
