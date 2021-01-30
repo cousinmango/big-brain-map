@@ -51,7 +51,7 @@ function getScaledColourValueFromNodeGroup(
   scale: gg.ScaleOrdinal<string, string, string> = initialisedImmutableColourScale,
 ): string {
   // An array of ten categorical colors represented as RGB hexadecimal strings.
-  console.log(d.group, `${d.group}`, scale(`${d.group}`), scale(`1`), scale(`${d.group}`));
+  console.log(d.group, `${d.group}`, scale(`${d.group}`), scale(`1`), scale(`${d.group}`),);
   // "#1f77b4"
   return scale(`${d.group}`);
 }

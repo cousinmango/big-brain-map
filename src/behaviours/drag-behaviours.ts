@@ -9,9 +9,9 @@ import type {
   SubjectPosition,
 } from 'd3';
 import * as d3 from 'd3';
-import { HappySimulation } from 'src/models/happy-simulation';
-import { HappyNodeDragEvent } from 'src/rewrite';
-import { HappyNode } from '../models/happy-node';
+import type { HappySimulation } from '..//models/happy-simulation';
+import type { HappyNodeDragEvent } from '../rewrite';
+import type { HappyNode } from '../models/happy-node';
 
 // eslint-disable-next-line valid-jsdoc
 /**

@@ -1,6 +1,6 @@
 import type { Force, Simulation, SimulationLinkDatum, SimulationNodeDatum } from 'd3';
-import { HappyLink } from 'src/models/happy-link';
-import { HappyNode } from 'src/models/happy-node';
+import { HappyLink } from '../models/happy-link';
+import { HappyNode } from '../models/happy-node';
 
 /**
  * Use string literals to help autocomplete defined D3 usages rather than any string.

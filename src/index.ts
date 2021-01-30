@@ -5,8 +5,6 @@ import type {
   D3ZoomEvent,
   ZoomedElementBaseType,
   EnterElement,
-  ZoomBehavior,
-  Transition,
   Selection,
 } from 'd3';
 import { MiserableNodesLinks } from './models/miserable-nodes-links';
@@ -37,7 +35,7 @@ async function getData(dataPath = './assets/miserables.json'): Promise<Miserable
 // function subject(event, d) {
 //   return d == null ? {x: event.x, y: event.y} : d;
 // }
-
+// @ts-ignore
 interface SomeElement extends DraggedElementBaseType {}
 
 const height = window.innerHeight;
@@ -102,48 +100,21 @@ function getSuperZoomScrollBehaviour(
   );
 }
 
-// eslint-disable-next-line valid-jsdoc
-/**
- *
- * @param {*} links
- * @return {d3.ForceLink<
- *   any,
- *   d3.SimulationLinkDatum<
- *     d3.SimulationNodeDatum & HappyNode
- *   >
- * >} force link for simulation
- */
 function useTheForceOnNodeLink(
-  links: Array<d3.SimulationLinkDatum<d3.SimulationNodeDatum & HappyLink>>,
-): d3.SimulationLinkDatum<d3.SimulationNodeDatum & HappyLink> {
+  links: Array<d3.SimulationLinkDatum<d3.SimulationNodeDatum & HappyNode>>,
+): d3.SimulationLinkDatum<d3.SimulationNodeDatum & HappyNode> {
   // eslint-disable-next-line valid-jsdoc
 
   function getForceLinkHappyNode(): d3.ForceLink<
-    SimulationNodeDatum & HappyLink,
-    SimulationLinkDatum<SimulationNodeDatum & HappyLink>
+    SimulationNodeDatum & HappyNode,
+    SimulationLinkDatum<SimulationNodeDatum & HappyNode>
   > {
     return d3.forceLink<
-      SimulationNodeDatum & HappyLink,
-      SimulationLinkDatum<SimulationNodeDatum & HappyLink>
+      SimulationNodeDatum & HappyNode,
+      SimulationLinkDatum<SimulationNodeDatum & HappyNode>
     >(links);
   }
 
-  // eslint-disable-next-line valid-jsdoc
-  /**
-   *
-   * @param {() =>
-   *  d3.ForceLink<
-   *    d3.SimulationNodeDatum & HappyNode,
-   *    d3.SimulationLinkDatum<d3.SimulationNodeDatum & HappyNode
-   *  >
-   * >} zz
-   * @return {d3.ForceLink<
-   *  any,
-   *  d3.SimulationLinkDatum<
-   *    d3.SimulationNodeDatum & HappyNode
-   *  >
-   * >}
-   */
   function extractedFnForJsDocCustomDataModel(zz = getForceLinkHappyNode) {
     return zz().id((d) => d.id);
   }
@@ -154,13 +125,14 @@ function useTheForceOnNodeLink(
    .id((d) => d.id)
    .distance(1);
    */
+  // @ts-expect-error
   return extractedFnForJsDocCustomDataModel(getForceLinkHappyNode).distance(1);
 }
 
 function getCollisionFactorHappyNode(
   collisionNode: SimulationNodeDatum & HappyNode,
-  i: number,
-  collisionNodes: Array<SimulationNodeDatum & HappyNode>,
+  _i: number,
+  _collisionNodes: Array<SimulationNodeDatum & HappyNode>,
 ) {
   const { id } = collisionNode;
 
@@ -208,6 +180,7 @@ function chart(data: MiserableNodesLinks): SVGSVGElement {
 
   const simulation = d3
     .forceSimulation(nodes)
+    // @ts-expect-error
     .force('link', useTheForceOnNodeLink(links))
     .force('charge', d3.forceManyBody().strength(-500))
     .force('center', d3.forceCenter(width / 2, height / 2))
@@ -254,6 +227,7 @@ function chart(data: MiserableNodesLinks): SVGSVGElement {
       clicked(
         event,
         d as SimulationNodeDatum & HappyNode,
+        // @ts-expect-error
         getSuperZoomScrollBehaviour(svgContainerGroupG),
       ),
     );
@@ -295,8 +269,10 @@ function chart(data: MiserableNodesLinks): SVGSVGElement {
 
     ((node as d3.Selection<any, HappyNode & SimulationNodeDatum, any, any>).attr(
       'cx',
+      // @ts-ignore
       (d: HappyNode & SimulationNodeDatum) => d?.x,
     ) as d3.Selection<any, any, any, any>).attr('cy', (d) => d.y);
+    // @ts-ignore
     label.attr('x', (d) => d.x).attr('y', (d) => d.y);
   });
 
@@ -307,7 +283,7 @@ function chart(data: MiserableNodesLinks): SVGSVGElement {
    * @param {*} theD3Zoom
    */
   function clicked(
-    event: MouseEvent,
+    _event: MouseEvent,
     d: SimulationNodeDatum & HappyNode,
     theD3Zoom: (
       transition: d3.Transition<SVGSVGElement, unknown, HTMLElement, any>,
