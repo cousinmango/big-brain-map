@@ -1,7 +1,6 @@
 // Namespace to avoid HTML5 DOM API conflicts.
 import type * as d from 'd3';
 import { drawChartFromData } from './helpers/d3-config/charts/draw-mind-map.js';
-import type { BrainColourScale } from './helpers/d3-config/colours/brain-colour-scale.js';
 import type { BrainMap } from './models/d3-datum/brain-map.js';
 // .js suffix for all tsc imports.
 import { miserableData } from './seed/miserables.js';

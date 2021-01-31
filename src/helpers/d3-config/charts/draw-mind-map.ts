@@ -3,8 +3,9 @@ import type { SomeElementForSelection } from 'src/models/d3-aliases/elements/ele
 import type { BrainLinkDatum } from 'src/models/d3-datum/brain-link-datum';
 import type { BrainMap } from 'src/models/d3-datum/brain-map';
 import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
+import { getDragBehaviour } from '../behaviours/old-drag-behaviour.js';
 import type { BrainColourScale } from '../colours/brain-colour-scale';
-
+import { setupRepositioningTickHandler } from '../simulation/simulation-positioning.js';
 export function getScaledColourValueFromNodeGroup(
   d: BrainNodeDatum,
   scale: BrainColourScale,
@@ -53,7 +54,7 @@ export function drawChartFromData(
       getScaledColourValueFromNodeGroup(node, initedColourScale),
     )
 
-    .call(getDragBehaviour(forceSim))
+    // .call(getDragBehaviour(forceSim, d3))
 
     .on('click', (_event, _d) => {
       return (
@@ -73,7 +74,7 @@ export function drawChartFromData(
       );
     });
 
-  getSelectedJoinedStrokeLinks(svgContainerGroupG, links);
+  const paintedLinks = getSelectedJoinedStrokeLinks(svgContainerGroupG, links);
 
   const paintedLabels = svgContainerGroupG
     .append('g')
@@ -84,10 +85,10 @@ export function drawChartFromData(
     .attr('fill', 'black')
     .attr('dy', '0em')
     .attr('text-anchor', 'middle')
-    .attr('dominant-baseline', 'middle')
-    .call((_selection: any, ..._args: any[]) => {
-      return getDragBehaviour(forceSim)(_selection, _args);
-    });
+    .attr('dominant-baseline', 'middle');
+  // .call((_selection: any, ..._args: any[]) => {
+  //   return getDragBehaviour(forceSim, d3)(_selection, _args);
+  // });
 
   paintedNodes.append('title').text((node) => node.id);
   forceSim.on('tick');

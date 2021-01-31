@@ -8,7 +8,7 @@ import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
  * simulation tick
  *
  */
-function setupRepositioningTickHandler(
+export function setupRepositioningTickHandler(
   simulation: d.Simulation<BrainNodeDatum, BrainLinkDatum>,
   nodeSelection: AliasedNodeSelection | AliasedNodeOrLinkSelection<BrainNodeDatum>,
   linkSelection: AliasedLinkSelection,

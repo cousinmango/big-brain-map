@@ -1,8 +1,8 @@
 import type * as d from 'd3';
-import type { HappySimulation } from '../models/happy-simulation';
-import type { HappyNode } from '../models/happy-node';
-
-
+import type { BrainSimulation } from 'src/models/brain-simulation';
+import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
+import type { BrainNodeDragEvent } from 'src/models/d3-events/brain-drag-event';
+ 
 // eslint-disable-next-line valid-jsdoc
 /**
  *
@@ -19,7 +19,7 @@ export function getDragBehaviour<
 ): (
   selection: d3.Selection<
     Window | Document | Element | d.EnterElement | SVGCircleElement | null,
-    HappyNode,
+    BrainNodeDatum,
     SVGGElement,
     unknown
   >,
@@ -53,8 +53,8 @@ export function getDragBehaviour<
 //  * As each function seems to replicate the same setting functionality
 //  * @param nodeDragEvent drag event to get the drag positioning and current nodes
 //  */
-// function setDragSubjectPositionFromDragEvent(nodeDragEvent: HappyNodeDragEvent) {
-//   const { x: dragEventX, y: dragEventY, subject }: HappyNodeDragEvent = nodeDragEvent;
+// function setDragSubjectPositionFromDragEvent(nodeDragEvent: BrainNodeDragEvent) {
+//   const { x: dragEventX, y: dragEventY, subject }: BrainNodeDragEvent = nodeDragEvent;
 //   // Setters
 //   subject.fx = dragEventX;
 //   subject.fy = dragEventY;
@@ -63,7 +63,7 @@ export function getDragBehaviour<
 //  * Hover doco doesn't explain null vs undefined vs not setting.
 //  * @param param0 subject
 //  */
-// function setDragSubjectNullPosition({ subject }: HappyNodeDragEvent) {
+// function setDragSubjectNullPosition({ subject }: BrainNodeDragEvent) {
 //   subject.fx = null;
 //   subject.fy = null;
 // }
@@ -71,11 +71,11 @@ export function getDragBehaviour<
  * Sets fixed positioning!
  * @param simulation sim
  * @param event uhh I think we used the datum together into the sim node
- * See HappyNode datum and HappyNode drag behaviour subject
+ * See BrainNodeDatum datum and BrainNodeDatum drag behaviour subject
  */
 export function handleDragStartEventSubjectNodePositioning(
-  simulation: HappySimulation,
-  event: HappyNodeDragEvent,
+  simulation: BrainSimulation,
+  event: BrainNodeDragEvent,
 ): void {
   const isEventInactive = !event.active;
   if (isEventInactive) {
@@ -91,13 +91,13 @@ export function handleDragStartEventSubjectNodePositioning(
  * Presumably while dragging.
  * @param event while dragging
  */
-export function handleDragDraggingEventSubjectNodePositioning(event: HappyNodeDragEvent) {
+export function handleDragDraggingEventSubjectNodePositioning(event: BrainNodeDragEvent) {
   event.subject.fx = event.x;
   event.subject.fy = event.y;
 }
 export function handleDragEndStopRepositioning(
-  simulation: HappySimulation,
-  event: HappyNodeDragEvent,
+  simulation: BrainSimulation,
+  event: BrainNodeDragEvent,
 ) {
   const isEventInactive = !event.active;
 
@@ -117,16 +117,16 @@ export function handleDragEndStopRepositioning(
  * If it keeps ticking other events, does it need to be set every time?
  */
 export function dragHandler(
-  simulation: HappySimulation,
+  simulation: BrainSimulation,
   d3: typeof d,
-): d.DragBehavior<Element, HappyNode, HappyNode | d.SubjectPosition> {
+): d.DragBehavior<Element, BrainNodeDatum, BrainNodeDatum | d.SubjectPosition> {
   // Probably do not even need all of the handlers
   // it simply sets the positions to the event drag positions
   // so the lack of a setter is likely sufficient for end.
   // Not sure if special behaviour needed in the start condition. Otherwise looks identical to
   // the drag-drag
   return d3
-    .drag<Element, HappyNode>()
+    .drag<Element, BrainNodeDatum>()
     .on('start', (event, _d) => handleDragStartEventSubjectNodePositioning(simulation, event))
     .on('drag', handleDragDraggingEventSubjectNodePositioning)
     .on('end', (event, _d) => handleDragEndStopRepositioning(simulation, event));
