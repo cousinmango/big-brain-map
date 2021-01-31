@@ -53,8 +53,7 @@ export function drawChartFromData(
     .attr('fill', (node, _index, _groups) =>
       getScaledColourValueFromNodeGroup(node, initedColourScale),
     )
-
-    // .call(getDragBehaviour(forceSim, d3))
+    .call(getDragBehaviour(forceSim, d3))
 
     .on('click', (_event, _d) => {
       return (
@@ -85,10 +84,10 @@ export function drawChartFromData(
     .attr('fill', 'black')
     .attr('dy', '0em')
     .attr('text-anchor', 'middle')
-    .attr('dominant-baseline', 'middle');
-  // .call((_selection: any, ..._args: any[]) => {
-  //   return getDragBehaviour(forceSim, d3)(_selection, _args);
-  // });
+    .attr('dominant-baseline', 'middle')
+    .call((_selection: any, ..._args: any[]) => {
+      return getDragBehaviour(forceSim, d3)(_selection, _args);
+    });
 
   paintedNodes.append('title').text((node) => node.id);
   forceSim.on('tick');
