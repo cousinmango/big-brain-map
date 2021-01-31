@@ -21,7 +21,7 @@ import { HappyNode } from './models/happy-node';
 // - NOTE: import with file extensions .js for any functional imports when using tsc transpiler.
 import { happyForceWrap } from './forces/collision-force-config.js';
 import { miserableData } from './models/miserables-seed.js';
-import { DraggedElementBaseType } from 'd3';
+import type { DraggedElementBaseType } from 'd3';
 import { getDragBehaviour } from './behaviours/drag-behaviours.js';
 
 export const d3: typeof gg = window.d3;
@@ -51,7 +51,7 @@ function getScaledColourValueFromNodeGroup(
   scale: gg.ScaleOrdinal<string, string, string> = initialisedImmutableColourScale,
 ): string {
   // An array of ten categorical colors represented as RGB hexadecimal strings.
-  console.log(d.group, `${d.group}`, scale(`${d.group}`), scale(`1`), scale(`${d.group}`),);
+  console.log(d.group, `${d.group}`, scale(`${d.group}`), scale(`1`), scale(`${d.group}`));
   // "#1f77b4"
   return scale(`${d.group}`);
 }
@@ -213,11 +213,9 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     .join('circle')
     .attr('id', (d) => d.id)
     .attr('r', (d) => d.id.length * 4)
-      .attr('fill', (d, _index, _groups) => getScaledColourValueFromNodeGroup(d))
-      
+    .attr('fill', (d, _index, _groups) => getScaledColourValueFromNodeGroup(d))
 
-      
-      .call(getDragBehaviour(forceSim))
+    .call(getDragBehaviour(forceSim))
 
     .on('click', (_event, _d) => {
       return (
@@ -249,10 +247,7 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     .selectAll('line')
     .data(links)
     .join('line')
-      .attr('stroke-width', (d) => Math.sqrt(d.value))
-    
-    
-    ;
+    .attr('stroke-width', (d) => Math.sqrt(d.value));
 
   const paintedLabels = svgContainerGroupG
     .append('g')

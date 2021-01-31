@@ -1,4 +1,4 @@
-import { SimulationLinkDatum } from 'd3';
+import type { SimulationLinkDatum } from 'd3';
 import { HappyNode } from './happy-node';
 
 /**

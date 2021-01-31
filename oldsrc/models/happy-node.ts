@@ -1,4 +1,4 @@
-import { SimulationNodeDatum } from "d3";
+import type { SimulationNodeDatum } from "d3";
 
 /**
  * Contain node data for use in D3

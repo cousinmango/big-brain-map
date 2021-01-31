@@ -8,8 +8,7 @@ import type {
   DragBehavior,
   SubjectPosition,
 } from 'd3';
-import * as d3 from 'd3';
-import type { HappySimulation } from '..//models/happy-simulation';
+import type { HappySimulation } from '../models/happy-simulation';
 import type { HappyNodeDragEvent } from '../rewrite';
 import type { HappyNode } from '../models/happy-node';
 
