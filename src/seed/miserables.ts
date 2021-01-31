@@ -1,4 +1,6 @@
-export const miserableData = {
+import { BrainMap } from "src/models/d3-datum/brain-map";
+
+export const miserableData: BrainMap = {
   nodes: [
     { id: 'Myriel?@#$%(*@&%*(@#&^*(&(UHSD(FHS(*H#W*TU#(THn21u517591^*@#(%&!(#^)_&', group: 1 },
     { id: 'Napoleon', group: 1 },

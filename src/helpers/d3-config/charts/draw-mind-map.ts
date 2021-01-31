@@ -1,0 +1,146 @@
+import type * as d from 'd3';
+import type { SomeElementForSelection } from 'src/models/d3-aliases/elements/element-selection';
+import type { BrainLinkDatum } from 'src/models/d3-datum/brain-link-datum';
+import type { BrainMap } from 'src/models/d3-datum/brain-map';
+import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
+import type { BrainColourScale } from '../colours/brain-colour-scale';
+
+export function getScaledColourValueFromNodeGroup(
+  d: BrainNodeDatum,
+  scale: BrainColourScale,
+): string {
+  return scale(`${d.group}`);
+}
+
+export function drawChartFromData(
+  nodesLinksData: BrainMap,
+  d3: typeof d,
+  initedColourScale: BrainColourScale = d3.scaleOrdinal(d3.schemeCategory10),
+): void {
+  const { nodes, links } = nodesLinksData;
+
+  const forceNodeRadius = d3.forceCollide<BrainNodeDatum>((node) => node.id.length * 5);
+  const forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum> = d3.forceSimulation(nodes);
+
+  const collisionForceLink = d3
+    .forceLink<BrainNodeDatum, BrainLinkDatum>(links)
+    .id((node) => node.id)
+    .distance(1);
+
+  simForceLink(forceSim, collisionForceLink);
+  simForceCharge(forceSim, d3);
+  simCenterWithinViewport(forceSim, d3);
+  simCollisionForceRadius(forceSim, forceNodeRadius);
+
+  const svg = getCreateAppendedSvgToBodyWithViewBoxDimensions(d3);
+  const svgContainerGroupG = getAppendedGGroup(svg);
+
+  const paintedNodes: d.Selection<
+    SomeElementForSelection,
+    BrainNodeDatum,
+    SVGGElement,
+    unknown
+  > = svgContainerGroupG
+    .append('g')
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 1.5)
+    .selectAll('circle')
+    .data(nodes)
+    .join('circle')
+    .attr('id', (node) => node.id)
+    .attr('r', (node) => node.id.length * 4)
+    .attr('fill', (node, _index, _groups) =>
+      getScaledColourValueFromNodeGroup(node, initedColourScale),
+    )
+
+    .call(getDragBehaviour(forceSim))
+
+    .on('click', (_event, _d) => {
+      return (
+        d3
+          .zoom()
+          .extent([
+            [0, 0],
+            [innerWidth, innerHeight],
+          ])
+          .scaleExtent([0.1, 8])
+          // "start", "zoom", "end"
+          .on('zoom', (zoomEvent) => {
+            const { transform } = zoomEvent;
+
+            svgContainerGroupG.attr('transform', transform.toString());
+          })
+      );
+    });
+
+  getSelectedJoinedStrokeLinks(svgContainerGroupG, links);
+
+  const paintedLabels = svgContainerGroupG
+    .append('g')
+    .selectAll('text')
+    .data(nodes)
+    .join('text')
+    .text((node) => node.id)
+    .attr('fill', 'black')
+    .attr('dy', '0em')
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'middle')
+    .call((_selection: any, ..._args: any[]) => {
+      return getDragBehaviour(forceSim)(_selection, _args);
+    });
+
+  paintedNodes.append('title').text((node) => node.id);
+  forceSim.on('tick');
+
+  setupRepositioningTickHandler(forceSim, paintedNodes, paintedLinks, paintedLabels);
+}
+function getSelectedJoinedStrokeLinks(
+  svgContainerGroupG: d.Selection<SVGGElement, unknown, HTMLElement, any>,
+  links: BrainLinkDatum[],
+): d.Selection<SomeElementForSelection, BrainLinkDatum, SVGGElement, unknown> {
+  return svgContainerGroupG
+    .append('g')
+    .attr('stroke', '#999')
+    .attr('stroke-opacity', 0.6)
+    .selectAll('line')
+    .data(links)
+    .join('line')
+    .attr('stroke-width', (node) => Math.sqrt(node.value));
+}
+
+function getAppendedGGroup(svg: d.Selection<SVGSVGElement, unknown, HTMLElement, any>) {
+  return svg.append('g');
+}
+
+function getCreateAppendedSvgToBodyWithViewBoxDimensions(
+  d3: typeof d,
+  width: number = innerWidth,
+  height: number = innerHeight,
+) {
+  return d3.select('body').append('svg').attr('viewBox', `0 0 ${width} ${height}`);
+}
+
+function simCollisionForceRadius(
+  forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>,
+  forceNodeRadius: d.ForceCollide<BrainNodeDatum>,
+) {
+  return forceSim.force('collisionForce', forceNodeRadius);
+}
+
+function simCenterWithinViewport(
+  forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>,
+  d3: typeof d,
+) {
+  return forceSim.force('center', d3.forceCenter(innerWidth / 2, innerHeight / 2));
+}
+
+function simForceCharge(forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>, d3: typeof d) {
+  return forceSim.force('charge', d3.forceManyBody<BrainNodeDatum>().strength(-500));
+}
+
+function simForceLink(
+  forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>,
+  collisionForceLink: d.ForceLink<BrainNodeDatum, BrainLinkDatum>,
+) {
+  return forceSim.force('link', collisionForceLink);
+}
