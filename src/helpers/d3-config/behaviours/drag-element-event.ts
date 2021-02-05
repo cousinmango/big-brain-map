@@ -52,7 +52,7 @@ export function handleDragEndStopRepositioning(
  * If it needs null, does that mean it keeps ticking the other events?
  * If it keeps ticking other events, does it need to be set every time?
  */
-export function dragHandler(
+export function getDragBehaviourConfig(
   simulation: BrainSimulation,
   d3: typeof d,
 ): d.DragBehavior<Element, BrainNodeDatum, BrainNodeDatum | d.SubjectPosition> {

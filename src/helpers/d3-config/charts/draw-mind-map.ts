@@ -3,7 +3,6 @@ import type { SomeElementForSelection } from 'src/models/d3-aliases/elements/ele
 import type { BrainLinkDatum } from 'src/models/d3-datum/brain-link-datum';
 import type { BrainMap } from 'src/models/d3-datum/brain-map';
 import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
-import { dragHandler } from '../behaviours/drag-element-event.js';
 import type { BrainColourScale } from '../colours/brain-colour-scale';
 import { setupRepositioningTickHandler } from '../simulation/simulation-positioning.js';
 
@@ -54,9 +53,9 @@ export function drawChartFromData(
     .attr('fill', (node, _index, _groups) =>
       getScaledColourValueFromNodeGroup(node, initedColourScale),
     )
-    .call((_selection: any, ..._args: any[]) => {
-      return dragHandler(forceSim, d3)(_selection, _args);
-    })
+    // .call((_selection: any, ..._args: any[]) => {
+    //   return handleSelectionDrag(forceSim, d3, _selection, _args);
+    // })
 
     .on('click', (_event, _d) => {
       return (
@@ -88,9 +87,9 @@ export function drawChartFromData(
     .attr('dy', '0em')
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'middle')
-    .call((_selection: any, ..._args: any[]) => {
-      return dragHandler(forceSim, d3)(_selection, _args);
-    });
+    // .call((_selection: any, ..._args: any[]) => {
+    //   return getDragBehaviourConfig(forceSim, d3)(_selection, _args);
+    // });
 
   paintedNodes.append('title').text((node) => node.id);
   forceSim.on('tick');
