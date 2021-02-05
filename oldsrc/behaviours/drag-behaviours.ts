@@ -6,8 +6,6 @@ import type { HappyNode } from '../models/happy-node';
 // eslint-disable-next-line valid-jsdoc
 /**
  *
- * @param {d3.Simulation<d3.SimulationNodeDatum>} simulation
- * @returns some mutable(?) drag event listeners?
  *
  */
 export function getDragBehaviour<
