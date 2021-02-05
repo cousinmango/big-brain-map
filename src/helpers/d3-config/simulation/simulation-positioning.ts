@@ -15,19 +15,7 @@ import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
  */
 export function setupRepositioningTickHandler(
   simulation: d.Simulation<BrainNodeDatum, BrainLinkDatum>,
-  nodeSelection:
-    | d.Selection<
-        // Selected element
-        Element,
-        // Current datum
-        BrainNodeDatum,
-        // Parent group should all be the svg g
-        SVGGElement,
-        // Parent datum. I don't think we have parents here
-        unknown
-      >
-    | AliasedNodeSelection
-    | AliasedNodeOrLinkSelection<BrainNodeDatum>,
+  nodeSelection: AliasedNodeSelection | AliasedNodeOrLinkSelection<BrainNodeDatum>,
   linkSelection: AliasedLinkSelection,
   labelSelection: AliasedLabelSelection,
 ): void {

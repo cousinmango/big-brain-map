@@ -12,6 +12,8 @@ export type SomeElementForSelection =
 
 export type AliasedLinkSelection = d.Selection<
   // Selected element
+  // Add separate | Element here (even though SomeElementForSelection includes Element) because
+  // another functionality does not accept null type.
   SomeElementForSelection | Element,
   // Current datum
   BrainLinkDatum,
@@ -20,16 +22,31 @@ export type AliasedLinkSelection = d.Selection<
   // Parent datum. I don't think we have parents here
   unknown
 >;
-export type AliasedNodeSelection = d.Selection<
-  // Selected element
-  SomeElementForSelection,
-  // Current datum
-  BrainNodeDatum,
-  // Parent group should all be the svg g
-  SVGGElement,
-  // Parent datum. I don't think we have parents here
-  unknown
->;
+
+export type AliasedNodeSelection =
+  | d.Selection<
+      // Selected element
+      // Add separate | Element here (even though SomeElementForSelection includes Element) because
+      // another functionality does not accept null type.
+      SomeElementForSelection | Element,
+      // Current datum
+      BrainNodeDatum,
+      // Parent group should all be the svg g
+      SVGGElement,
+      // Parent datum. I don't think we have parents here
+      unknown
+  >
+  // The above fix did not work for some reason. Add separately here again for DOM HTML5 std lib Element
+  | d.Selection<
+      // Selected element
+      Element,
+      // Current datum
+      BrainNodeDatum,
+      // Parent group should all be the svg g
+      SVGGElement,
+      // Parent datum. I don't think we have parents here
+      unknown
+    >;
 
 export type AliasedNodeOrLinkSelection<D extends BrainNodeDatum | BrainLinkDatum> = d.Selection<
   // Selected element

@@ -62,7 +62,7 @@ export function drawChartFromData(
     .attr('r', (node) => node.id.length * 4)
     .attr('fill', (node, _index, _groups) =>
       getScaledColourValueFromNodeGroup(node, initedColourScale),
-    ) as d.Selection<Element, BrainNodeDatum, any, any>)
+    ) as d.Selection<Element, BrainNodeDatum, SVGGElement, unknown>)
     .call(
       /* 
       Bug in the d.DragBehavior typings. Doesn't allow generic here
