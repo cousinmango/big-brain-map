@@ -6,7 +6,7 @@ import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
 // import { handleSelectionDrag } from '../behaviours/handle-drag-selection.js';
 import type { BrainColourScale } from '../colours/brain-colour-scale';
 import { setupRepositioningTickHandler } from '../simulation/simulation-positioning.js';
-import { getDragBehaviourConfigForSelectionCall } from '../behaviours/drag-element-event.js';
+import { getDragForSelectionCall } from '../behaviours/drag-element-event.js';
 
 export function getScaledColourValueFromNodeGroup(
   node: BrainNodeDatum,
@@ -63,7 +63,7 @@ export function drawChartFromData(
     .attr('fill', (node, _index, _groups) =>
       getScaledColourValueFromNodeGroup(node, initedColourScale),
     ) as d.Selection<Element, BrainNodeDatum, SVGGElement, unknown>)
-    .call(getDragBehaviourConfigForSelectionCall(forceSim, d3))
+    .call(getDragForSelectionCall(forceSim, d3))
     .on('click', (_event, _d) => {
       return (
         d3
@@ -99,7 +99,7 @@ export function drawChartFromData(
        * The verbose way of the one-liner. Do not need to explicitly pass in these parameters
        * Shown here for clarity future maintainability of the types, how the DragBehaviour selection trigger works
        */
-      return getDragBehaviourConfigForSelectionCall(forceSim, d3)(_selection, _args);
+      return getDragForSelectionCall(forceSim, d3)(_selection, _args);
     });
 
   paintedNodes.append('title').text((node) => node.id);

@@ -56,7 +56,7 @@ export function handleDragEndStopRepositioning(
  * 
  * @returns the drag behaviour which holds the selection applier function invoked via .call()
  */
-export function getDragBehaviourConfigForSelectionCall(
+export function getDragForSelectionCall(
   simulation: BrainSimulation,
   d3: typeof d,
 ): d.DragBehavior<Element, BrainNodeDatum, BrainNodeDatum | d.SubjectPosition> {
