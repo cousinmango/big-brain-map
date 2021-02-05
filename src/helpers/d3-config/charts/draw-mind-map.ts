@@ -1,5 +1,10 @@
 import type * as d from 'd3';
-import type { SomeElementForSelection } from 'src/models/d3-aliases/elements/element-selection';
+import type {
+  BrainNodeElementSelection,
+  ParentSvgGroupSelectionForWholeBrainMap,
+  ParentSvgGGroupSelectionForMappedNodesLinksLabels,
+  SomeElementForSelection,
+} from 'src/models/d3-aliases/elements/element-selection';
 import type { BrainLinkDatum } from 'src/models/d3-datum/brain-link-datum';
 import type { BrainMap } from 'src/models/d3-datum/brain-map';
 import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
@@ -35,23 +40,11 @@ export function drawChartFromData(
   simCenterWithinViewport(forceSim, d3);
   simCollisionForceRadius(forceSim, forceNodeRadius);
 
-  const svg = getCreateAppendedSvgToBodyWithViewBoxDimensions(d3);
-  const svgContainerGroupG = getAppendedGGroup(svg);
-  // const za: d.Selection<Element, BrainNodeDatum, any, any>;
-  /*  
-  : d.Selection<
-    Element,
-    BrainNodeDatum,
-    SVGGElement extends any ? any : any,
-    any
-  > 
-  */
-  const paintedNodes: d.Selection<
-    Element,
-    BrainNodeDatum,
-    SVGGElement,
-    unknown
-  > = (svgContainerGroupG
+  const svg: ParentSvgGroupSelectionForWholeBrainMap = getCreateAppendedSvgToBodyWithViewBoxDimensions(d3);
+
+  const svgContainerGroupG: ParentSvgGGroupSelectionForMappedNodesLinksLabels = getAppendedGGroup(svg);
+
+  const paintedNodes: BrainNodeElementSelection = (svgContainerGroupG
     .append('g')
     .attr('stroke', '#fff')
     .attr('stroke-width', 1.5)
@@ -62,7 +55,7 @@ export function drawChartFromData(
     .attr('r', (node) => node.id.length * 4)
     .attr('fill', (node, _index, _groups) =>
       getScaledColourValueFromNodeGroup(node, initedColourScale),
-    ) as d.Selection<Element, BrainNodeDatum, SVGGElement, unknown>)
+    ) as BrainNodeElementSelection)
     .call(getDragBehaviourConfigForSelectionCall(forceSim, d3))
     .on('click', (_event, _d) => {
       return (
