@@ -47,6 +47,8 @@ web_modules/
 
 # TypeScript cache
 *.tsbuildinfo
+.tsbuildinfo.*
+tsBuildInfoIncrementalDeleteThisForReset.json
 
 # Optional npm cache directory
 .npm
