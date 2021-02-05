@@ -12,7 +12,7 @@ export type SomeElementForSelection =
 
 export type AliasedLinkSelection = d.Selection<
   // Selected element
-  SomeElementForSelection,
+  SomeElementForSelection | Element,
   // Current datum
   BrainLinkDatum,
   // Parent group should all be the svg g

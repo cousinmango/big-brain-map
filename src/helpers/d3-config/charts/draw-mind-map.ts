@@ -3,8 +3,10 @@ import type { SomeElementForSelection } from 'src/models/d3-aliases/elements/ele
 import type { BrainLinkDatum } from 'src/models/d3-datum/brain-link-datum';
 import type { BrainMap } from 'src/models/d3-datum/brain-map';
 import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
+// import { handleSelectionDrag } from '../behaviours/handle-drag-selection.js';
 import type { BrainColourScale } from '../colours/brain-colour-scale';
 import { setupRepositioningTickHandler } from '../simulation/simulation-positioning.js';
+import { getDragBehaviourConfig } from '../behaviours/drag-element-event.js';
 
 export function getScaledColourValueFromNodeGroup(
   node: BrainNodeDatum,
@@ -35,13 +37,21 @@ export function drawChartFromData(
 
   const svg = getCreateAppendedSvgToBodyWithViewBoxDimensions(d3);
   const svgContainerGroupG = getAppendedGGroup(svg);
-
+  // const za: d.Selection<Element, BrainNodeDatum, any, any>;
+  /*  
+  : d.Selection<
+    Element,
+    BrainNodeDatum,
+    SVGGElement extends any ? any : any,
+    any
+  > 
+  */
   const paintedNodes: d.Selection<
-    SomeElementForSelection,
+    Element,
     BrainNodeDatum,
     SVGGElement,
     unknown
-  > = svgContainerGroupG
+  > = (svgContainerGroupG
     .append('g')
     .attr('stroke', '#fff')
     .attr('stroke-width', 1.5)
@@ -52,10 +62,19 @@ export function drawChartFromData(
     .attr('r', (node) => node.id.length * 4)
     .attr('fill', (node, _index, _groups) =>
       getScaledColourValueFromNodeGroup(node, initedColourScale),
+    ) as d.Selection<Element, BrainNodeDatum, any, any>)
+    .call(
+      /* 
+      Bug in the d.DragBehavior typings. Doesn't allow generic here
+      (selection: Selection<GElement, Datum, any, any>, ...args: any[]): void;
+      When it should allow for generic type parameters e.g. 3rd SVGGelement
+      Type 
+      'Selection<SomeElementForSelection, BrainNodeDatum, SVGGElement, unknown>' 
+      is not assignable to type 
+      'Selection<Element, BrainNodeDatum, any, any>
+      */
+      getDragBehaviourConfig(forceSim, d3),
     )
-    // .call((_selection: any, ..._args: any[]) => {
-    //   return handleSelectionDrag(forceSim, d3, _selection, _args);
-    // })
 
     .on('click', (_event, _d) => {
       return (
@@ -86,10 +105,10 @@ export function drawChartFromData(
     .attr('fill', 'black')
     .attr('dy', '0em')
     .attr('text-anchor', 'middle')
-    .attr('dominant-baseline', 'middle')
-    // .call((_selection: any, ..._args: any[]) => {
-    //   return getDragBehaviourConfig(forceSim, d3)(_selection, _args);
-    // });
+    .attr('dominant-baseline', 'middle');
+  // .call((_selection: any, ..._args: any[]) => {
+  //   return getDragBehaviourConfig(forceSim, d3)(_selection, _args);
+  // });
 
   paintedNodes.append('title').text((node) => node.id);
   forceSim.on('tick');

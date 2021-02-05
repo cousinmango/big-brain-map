@@ -1,5 +1,10 @@
 import type * as d from 'd3';
-import type { AliasedLabelSelection, AliasedLinkSelection, AliasedNodeOrLinkSelection, AliasedNodeSelection } from 'src/models/d3-aliases/elements/element-selection';
+import type {
+  AliasedLabelSelection,
+  AliasedLinkSelection,
+  AliasedNodeOrLinkSelection,
+  AliasedNodeSelection,
+} from 'src/models/d3-aliases/elements/element-selection';
 import type { BrainLinkDatum } from 'src/models/d3-datum/brain-link-datum';
 import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
 
@@ -10,7 +15,19 @@ import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
  */
 export function setupRepositioningTickHandler(
   simulation: d.Simulation<BrainNodeDatum, BrainLinkDatum>,
-  nodeSelection: AliasedNodeSelection | AliasedNodeOrLinkSelection<BrainNodeDatum>,
+  nodeSelection:
+    | d.Selection<
+        // Selected element
+        Element,
+        // Current datum
+        BrainNodeDatum,
+        // Parent group should all be the svg g
+        SVGGElement,
+        // Parent datum. I don't think we have parents here
+        unknown
+      >
+    | AliasedNodeSelection
+    | AliasedNodeOrLinkSelection<BrainNodeDatum>,
   linkSelection: AliasedLinkSelection,
   labelSelection: AliasedLabelSelection,
 ): void {
