@@ -8,16 +8,13 @@ import type {
   DragBehavior,
   SubjectPosition,
 } from 'd3';
-import * as d3 from 'd3';
-import type { HappySimulation } from '..//models/happy-simulation';
-import type { HappyNodeDragEvent } from '../rewrite';
-import type { HappyNode } from '../models/happy-node';
+import { HappySimulation } from 'src/models/happy-simulation';
+import { HappyNodeDragEvent } from 'src/rewrite';
+import { HappyNode } from '../models/happy-node';
 
 // eslint-disable-next-line valid-jsdoc
 /**
  *
- * @param {d3.Simulation<d3.SimulationNodeDatum>} simulation
- * @returns some mutable(?) drag event listeners?
  *
  */
 export function getDragBehaviour<

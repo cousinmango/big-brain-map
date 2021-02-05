@@ -8,5 +8,6 @@
   "dotnet-test-explorer.enableTelemetry": false,
   "liveshare.allowGuestDebugControl": true,
   "liveshare.languages.allowGuestCommandControl": true,
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "god.tsconfig": "./tsconfig.json"
 }

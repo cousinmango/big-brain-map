@@ -213,11 +213,9 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     .join('circle')
     .attr('id', (d) => d.id)
     .attr('r', (d) => d.id.length * 4)
-      .attr('fill', (d, _index, _groups) => getScaledColourValueFromNodeGroup(d))
-      
+    .attr('fill', (d, _index, _groups) => getScaledColourValueFromNodeGroup(d))
 
-      
-      .call(getDragBehaviour(forceSim))
+    .call(getDragBehaviour(forceSim))
 
     .on('click', (_event, _d) => {
       return (
@@ -249,10 +247,7 @@ function drawChartFromData(nodesLinksData: MiserableNodesLinks): void {
     .selectAll('line')
     .data(links)
     .join('line')
-      .attr('stroke-width', (d) => Math.sqrt(d.value))
-    
-    
-    ;
+    .attr('stroke-width', (d) => Math.sqrt(d.value));
 
   const paintedLabels = svgContainerGroupG
     .append('g')

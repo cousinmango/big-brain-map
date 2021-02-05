@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "assumeChangesOnlyAffectDirectDependencies": false,
+    "extendedDiagnostics": false,
     /* Basic Options */
     "incremental": true, /* Enable incremental compilation */
     "module": "ESNext", /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
@@ -17,7 +19,14 @@
     "composite": true, /* Enable project compilation */
     "tsBuildInfoFile": "./compilationinfo.log", /* Specify file to store incremental compilation information */
     "removeComments": true, /* Do not emit comments to output. */
-    // "noEmit": true,                        /* Do not emit outputs. */
+    "noEmit": false,                        /* Do not emit outputs. */
+    "noEmitHelpers": false,
+    "noEmitOnError": false,
+    "noImplicitUseStrict": false,
+    "explainFiles": true, /* New as of TypeScript 4.2*/
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "disableSolutionSearching": false,
     "importHelpers": true, /* Import emit helpers from 'tslib'. */
     "downlevelIteration": true, /* Provide full support for iterables in 'for-of', spread, and destructuring when targeting 'ES5' or 'ES3'. */
     "isolatedModules": true, /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
