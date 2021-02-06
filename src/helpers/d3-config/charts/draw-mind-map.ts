@@ -48,6 +48,24 @@ export function drawChartFromData(
     viewboxedParentSvg,
   );
 
+  // Call the zoomability handler on the overarching svg group
+  // Even though the zoom handler mutates the g group one level down
+
+  viewboxedParentSvg.call(
+    d3
+      .zoom()
+      .extent([
+        [0, 0],
+        [innerWidth, innerHeight],
+      ])
+      .scaleExtent([0.1, 8])
+      // Zoom event listener and handler
+      .on('zoom', (zoomEvent, node) => {
+        const parentGGroupToTransform = svgContainerGroupG;
+        const transform = zoomEvent.transform;
+        parentGGroupToTransform.attr('transform', transform);
+      }),
+  );
   // viewboxedParentSvg.call(() => {
   //   return (
   //     d3
