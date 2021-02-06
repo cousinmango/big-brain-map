@@ -40,15 +40,44 @@ export function drawChartFromData(
   simCenterWithinViewport(forceSim, d3);
   simCollisionForceRadius(forceSim, forceNodeRadius);
 
-  const svg: ParentSvgGroupSelectionForWholeBrainMap = getCreateAppendedSvgToBodyWithViewBoxDimensions(d3);
+  const viewboxedParentSvg: ParentSvgGroupSelectionForWholeBrainMap = getCreateAppendedSvgToBodyWithViewBoxDimensions(
+    d3,
+  );
 
-  const svgContainerGroupG: ParentSvgGGroupSelectionForMappedNodesLinksLabels = getAppendedGGroup(svg);
+  const svgContainerGroupG: ParentSvgGGroupSelectionForMappedNodesLinksLabels = getAppendedGGroup(
+    viewboxedParentSvg,
+  );
 
-  const paintedNodes: BrainNodeElementSelection = (svgContainerGroupG
+  // viewboxedParentSvg.call(() => {
+  //   return (
+  //     d3
+  //       .zoom()
+  //       .extent([
+  //         [0, 0],
+  //         [innerWidth, innerHeight],
+  //       ])
+  //       .scaleExtent([0.1, 8])
+  //       // "start", "zoom", "end"
+  //       .on('zoom', (zoomEvent: d.D3ZoomEvent<Element, BrainNodeDatum>, _node) => {
+  //         const { transform } = zoomEvent;
+
+  //         svgContainerGroupG.attr('transform', transform.toString());
+  //       })
+  //   );
+  // });
+
+  const circleNodes: d.Selection<
+    d.BaseType,
+    unknown,
+    SVGGElement,
+    unknown
+  > = svgContainerGroupG
     .append('g')
     .attr('stroke', '#fff')
     .attr('stroke-width', 1.5)
-    .selectAll('circle')
+    .selectAll('circle');
+
+  const paintedNodes: BrainNodeElementSelection = (circleNodes
     .data(nodes)
     .join('circle')
     .attr('id', (node) => node.id)
@@ -67,7 +96,7 @@ export function drawChartFromData(
           ])
           .scaleExtent([0.1, 8])
           // "start", "zoom", "end"
-          .on('zoom', (zoomEvent) => {
+          .on('zoom', (zoomEvent: d.D3ZoomEvent<Element, BrainNodeDatum>, _node: unknown) => {
             const { transform } = zoomEvent;
 
             svgContainerGroupG.attr('transform', transform.toString());
