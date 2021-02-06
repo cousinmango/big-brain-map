@@ -145,8 +145,14 @@ export function drawChartFromData(
       return getDragBehaviourConfigForSelectionCall(forceSim, d3)(_selection, _args);
     });
 
+    /**
+     * selection.call(dragBehaviour) 
+     * is apparently synonymous to 
+     * dragBehaviour(selection)
+     * Code documentation seems to prefer the trigger via selection.call()
+     */
+
   paintedNodes.append('title').text((node) => node.id);
-  forceSim.on('tick');
 
   setupRepositioningTickHandler(forceSim, paintedNodes, paintedLinks, paintedLabels);
 }
