@@ -103,29 +103,33 @@ export function drawChartFromData(
       getScaledColourValueFromNodeGroup(node, initedColourScale),
     ) as BrainNodeElementSelection)
     .call(getDragBehaviourConfigForSelectionCall(forceSim, d3))
-    .on('click', (_event, _d) => {
-      return (
-        d3
-          .zoom()
-          .extent([
-            [0, 0],
-            [innerWidth, innerHeight],
-          ])
-          .scaleExtent([0.1, 8])
-          // "start", "zoom", "end"
-          .on('zoom', (zoomEvent: d.D3ZoomEvent<Element, BrainNodeDatum>, _node: unknown) => {
-            const { transform } = zoomEvent;
+    .on(
+      'click',
+      (_event: d.D3ZoomEvent<Element, unknown>, _d): d.ZoomBehavior<Element, unknown> => {
+        return (
+          d3
+            .zoom()
+            .extent([
+              [0, 0],
+              [innerWidth, innerHeight],
+            ])
+            .scaleExtent([0.1, 8])
+            // "start", "zoom", "end"
+            .on('zoom', (zoomEvent: d.D3ZoomEvent<Element, BrainNodeDatum>, _node: unknown) => {
+              const { transform } = zoomEvent;
 
-            svgContainerGroupG.attr('transform', transform.toString());
-          })
-      );
-    });
+              svgContainerGroupG.attr('transform', transform.toString());
+            })
+        );
+      },
+    );
 
   const paintedLinks = getSelectedJoinedStrokeLinks(svgContainerGroupG, links);
 
-  const paintedLabels = svgContainerGroupG
-    .append('g')
-    .selectAll('text')
+  const selectedLabelGGroup = svgContainerGroupG.append('g');
+  const selectedTextLabels = selectedLabelGGroup.selectAll('text');
+
+  const paintedLabels = selectedTextLabels
     .data(nodes)
     .join('text')
     .text((node) => node.id)
