@@ -13,15 +13,22 @@ const config = {
   extends: [
     "eslint:recommended",
     "google",
+    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     // Resolve conflicting eslint vs prettier
     "prettier/@typescript-eslint",
     // Enable eslint-plugin-prettier and eslint-config-prettier.
     // This will display prettier errors as ESLint errors. 
     // Make sure this is always the last configuration in the extends array.
+    "prettier",
     "plugin:prettier/recommended"
 
   ],
+  plugins: [
+    "@typescript-eslint",
+    "prettier"
+  ],
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     amd: true,
     ecmaFeatures: {
@@ -57,6 +64,14 @@ const config = {
     sourceType: "module",
   },
   rules: {
+    "@typescript-eslint/typedef": "error",
+    "@typescript-eslint/explicit-function-return-type": ["error"],
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-angle-bracket-type-assertion": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-inferrable-types": "off",
     "array-bracket-newline": "error",
     "array-bracket-spacing": "error",
     "array-element-newline": "error",
@@ -82,7 +97,7 @@ const config = {
     ],
     "linebreak-style": "off",
     "max-len": [
-      "error", 
+      "error",
       120,
     ],
 
