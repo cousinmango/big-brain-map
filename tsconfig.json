@@ -24,7 +24,7 @@
     "noEmitHelpers": false,
     "noEmitOnError": false,
     "noImplicitUseStrict": false,
-    "explainFiles": true, /* New as of TypeScript 4.2*/
+    // "explainFiles": true, /* New as of TypeScript 4.2*/
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "disableSolutionSearching": false,
