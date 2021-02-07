@@ -27,7 +27,6 @@ export function drawChartFromData(
 ): void {
   const { nodes, links } = nodesLinksData;
 
-  const forceNodeRadius = d3.forceCollide<BrainNodeDatum>((node) => node.id.length * 5);
   const forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum> = d3.forceSimulation(nodes);
 
   const collisionForceLink = d3
@@ -35,15 +34,23 @@ export function drawChartFromData(
     .id((node) => node.id)
     .distance(1);
 
+  /**
+   * Wrapping these chained calls into separate functions mainly for self-descriptive benefit
+   *
+   * Also doco and default parameters inside.
+   *
+   * Mutations on the force simulation configuration
+   *
+   * May obscure maintainability for D3 pros.
+   */
   simForceLink(forceSim, collisionForceLink);
   simForceCharge(forceSim, d3);
   simCenterWithinViewport(forceSim, d3);
-  simCollisionForceRadius(forceSim, forceNodeRadius);
+  simCollisionForceRadius(forceSim, d3);
 
   const viewboxedParentSvg: ParentSvgGroupSelectionForWholeBrainMap = getCreateAppendedSvgToBodyWithViewBoxDimensions(
     d3,
   );
-
   const svgContainerGroupG: ParentSvgGGroupSelectionForMappedNodesLinksLabels = getAppendedGGroup(
     viewboxedParentSvg,
   );
@@ -65,23 +72,6 @@ export function drawChartFromData(
         parentGGroupToTransform.attr('transform', transform);
       }),
   );
-  // viewboxedParentSvg.call(() => {
-  //   return (
-  //     d3
-  //       .zoom()
-  //       .extent([
-  //         [0, 0],
-  //         [innerWidth, innerHeight],
-  //       ])
-  //       .scaleExtent([0.1, 8])
-  //       // "start", "zoom", "end"
-  //       .on('zoom', (zoomEvent: d.D3ZoomEvent<Element, BrainNodeDatum>, _node) => {
-  //         const { transform } = zoomEvent;
-
-  //         svgContainerGroupG.attr('transform', transform.toString());
-  //       })
-  //   );
-  // });
 
   const circleNodes: d.Selection<
     d.BaseType,
@@ -145,12 +135,12 @@ export function drawChartFromData(
       return getDragBehaviourConfigForSelectionCall(forceSim, d3)(_selection, _args);
     });
 
-    /**
-     * selection.call(dragBehaviour) 
-     * is apparently synonymous to 
-     * dragBehaviour(selection)
-     * Code documentation seems to prefer the trigger via selection.call()
-     */
+  /**
+   * selection.call(dragBehaviour)
+   * is apparently synonymous to
+   * dragBehaviour(selection)
+   * Code documentation seems to prefer the trigger via selection.call()
+   */
 
   paintedNodes.append('title').text((node) => node.id);
 
@@ -184,16 +174,28 @@ function getCreateAppendedSvgToBodyWithViewBoxDimensions(
 
 function simCollisionForceRadius(
   forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>,
-  forceNodeRadius: d.ForceCollide<BrainNodeDatum>,
+  d3: typeof d,
+  forceNodeRadius: d.ForceCollide<BrainNodeDatum> = d3.forceCollide<BrainNodeDatum>(
+    (node) => node.id.length * 5,
+  ),
 ) {
   return forceSim.force('collisionForce', forceNodeRadius);
 }
 
+/**
+ *
+ * @param forceSim simulation which handles positioning of elements nodes links labels on tick
+ * @param d3 loaded/imported window d3
+ * @param width Used to calculate the midpoint for centre along x axis. Defaults to window innerWidth DOM js global variable
+ * @param height Used to calculate the midpoint for centre along y axis. Defaults to window innerWidth DOM js global variable
+ */
 function simCenterWithinViewport(
   forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>,
   d3: typeof d,
+  width = innerWidth / 2,
+  height = innerHeight / 2,
 ) {
-  return forceSim.force('center', d3.forceCenter(innerWidth / 2, innerHeight / 2));
+  return forceSim.force('center', d3.forceCenter(width, height));
 }
 
 function simForceCharge(forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>, d3: typeof d) {
