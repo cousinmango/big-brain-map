@@ -48,12 +48,12 @@ export function handleDragEndStopRepositioning(
  * Handles the start, drag (continuous) and end
  *
  * DragBehaviour holds the selection behaviour applier that is invoked via d3.Selection<>.call()
- * 
+ *
  * Not sure if it needs explicit handling for all drag events
  * Null vs mutating subject position every time...
  * If it needs null, does that mean it keeps ticking the other events?
  * If it keeps ticking other events, does it need to be set every time?
- * 
+ *
  * @returns the drag behaviour which holds the selection applier function invoked via .call()
  */
 export function getDragBehaviourConfigForSelectionCall(
@@ -67,7 +67,7 @@ export function getDragBehaviourConfigForSelectionCall(
   // the drag-drag
   return d3
     .drag<Element, BrainNodeDatum>()
-    .on('start', (event, _d) => handleDragStartEventSubjectNodePositioning(simulation, event))
-    .on('drag', handleDragDraggingEventSubjectNodePositioning)
-    .on('end', (event, _d) => handleDragEndStopRepositioning(simulation, event));
+    .on("start", (event, _d) => handleDragStartEventSubjectNodePositioning(simulation, event))
+    .on("drag", handleDragDraggingEventSubjectNodePositioning)
+    .on("end", (event, _d) => handleDragEndStopRepositioning(simulation, event));
 }

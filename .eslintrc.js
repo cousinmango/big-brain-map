@@ -10,12 +10,8 @@ const config = {
     node: true,
   },
   parser: "@typescript-eslint/parser",
-  plugins: [
-    "@typescript-eslint",
-    "prettier"
-  ],
+  plugins: ["@typescript-eslint", "prettier"],
   extends: [
-
     // "airbnb",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
@@ -32,7 +28,6 @@ const config = {
     // Make sure this is always the last configuration in the extends array.
     // "prettier",
     // "plugin:prettier/recommended"
-
   ],
 
   parserOptions: {
@@ -71,51 +66,40 @@ const config = {
     sourceType: "module",
   },
   rules: {
+    "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
     "@typescript-eslint/typedef": "error",
     "@typescript-eslint/explicit-function-return-type": ["error"],
-    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-angle-bracket-type-assertion": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-inferrable-types": "off",
-    
+
     "@typescript-eslint/prefer-interface": "off", // also want to use "type"
 
     "prettier/prettier": [
       "error",
       {
-        singleQuote: true,
-        semi: false,
+        singleQuote: false,
+        semi: true,
       },
     ],
-    "array-bracket-newline": ["error", {"minItems": 2}],
+    "array-bracket-newline": ["error", { minItems: 2 }],
     "array-bracket-spacing": "error",
     "array-element-newline": "error",
     "arrow-spacing": "error",
     "brace-style": "error",
 
     camelcase: "error",
-    "comma-dangle": [
-      "error",
-      "always",
-    ],
+    "comma-dangle": ["error", "always-multiline"],
 
     "default-case": 2,
 
-    eqeqeq: [
-      "error",
-      "always",
-    ],
+    eqeqeq: ["error", "always"],
 
-    indent: [
-      "error",
-      2,
-    ],
+    indent: ["error", 2],
     "linebreak-style": "off",
-    "max-len": [
-      "error",
-      120,
-    ],
+    "max-len": ["error", 120],
 
     "newline-before-return": "error",
     "no-const-assign": "error",
@@ -135,17 +119,11 @@ const config = {
 
     "no-var": 2,
 
-    "object-curly-spacing": [
-      "error",
-      "always",
-    ],
+    "object-curly-spacing": ["error", "always"],
     "prefer-const": "error",
     "prefer-spread": "error",
 
-    "quote-props": [
-      "error",
-      "as-needed",
-    ],
+    "quote-props": ["error", "as-needed"],
     quotes: [
       "error",
       "double",
@@ -157,15 +135,8 @@ const config = {
 
     radix: "error",
 
-    semi: [
-      "error",
-      "always",
-    ],
-    strict: [
-      "error",
-      "global",
-    ],
-
+    semi: ["error", "always"],
+    strict: ["error", "global"],
   },
 };
 

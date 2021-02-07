@@ -1,6 +1,6 @@
-import type * as d from 'd3';
-import type { BrainLinkDatum } from 'src/models/d3-datum/brain-link-datum';
-import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
+import type * as d from "d3";
+import type { BrainLinkDatum } from "src/models/d3-datum/brain-link-datum";
+import type { BrainNodeDatum } from "src/models/d3-datum/brain-node-datum";
 
 /**
  * Should use BrainNodeElementSelection where possible
@@ -15,7 +15,7 @@ export type SomeElementForSelection =
 
 /**
  * Helper type for the parent svg element
- * 
+ *
  * the svg in the DOM hierarchy
  * svg
  *  g
@@ -28,11 +28,11 @@ export type SomeElementForSelection =
  *    g (labels)
  *      text
  *      text
- *    
+ *
  * Do we need these separate g groups? Or should they be co-located at the lower levels?
  * e.g. Treat each node and label together same model
  * Links probably still separate.
- * 
+ *
  */
 export type ParentSvgGroupSelectionForWholeBrainMap = d.Selection<
   SVGSVGElement,
@@ -47,7 +47,12 @@ export type ParentSvgGroupSelectionForWholeBrainMap = d.Selection<
  * * lines
  * * label
  */
-export type ParentSvgGGroupSelectionForMappedNodesLinksLabels = d.Selection<SVGGElement, unknown, HTMLElement, any>;
+export type ParentSvgGGroupSelectionForMappedNodesLinksLabels = d.Selection<
+  SVGGElement,
+  unknown,
+  HTMLElement,
+  any
+>;
 
 /**
  * Narrow type for drag behaviour function expectations

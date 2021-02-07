@@ -1,8 +1,8 @@
-import type * as d from 'd3';
-import type { BrainSimulation } from 'src/models/brain-simulation';
-import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
-import type { BrainNodeDragEvent } from 'src/models/d3-events/brain-drag-event';
- 
+import type * as d from "d3";
+import type { BrainSimulation } from "src/models/brain-simulation";
+import type { BrainNodeDatum } from "src/models/d3-datum/brain-node-datum";
+import type { BrainNodeDragEvent } from "src/models/d3-events/brain-drag-event";
+
 // eslint-disable-next-line valid-jsdoc
 /**
  *
@@ -45,7 +45,7 @@ export function getDragBehaviour<
   // It works
   // - FIXME: This works but clashes with d3 typing expected svg.call return
   // @ts-ignore
-  return d3.drag().on('start', dragStarted).on('drag', dragged).on('end', dragEnded);
+  return d3.drag().on("start", dragStarted).on("drag", dragged).on("end", dragEnded);
 }
 
 // /**
@@ -127,7 +127,7 @@ export function dragHandler(
   // the drag-drag
   return d3
     .drag<Element, BrainNodeDatum>()
-    .on('start', (event, _d) => handleDragStartEventSubjectNodePositioning(simulation, event))
-    .on('drag', handleDragDraggingEventSubjectNodePositioning)
-    .on('end', (event, _d) => handleDragEndStopRepositioning(simulation, event));
+    .on("start", (event, _d) => handleDragStartEventSubjectNodePositioning(simulation, event))
+    .on("drag", handleDragDraggingEventSubjectNodePositioning)
+    .on("end", (event, _d) => handleDragEndStopRepositioning(simulation, event));
 }

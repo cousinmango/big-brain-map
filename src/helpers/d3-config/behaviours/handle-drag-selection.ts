@@ -1,7 +1,7 @@
-import type * as d from 'd3';
-import type { BrainLinkDatum } from 'src/models/d3-datum/brain-link-datum';
-import type { BrainNodeDatum } from 'src/models/d3-datum/brain-node-datum';
-import { getDragBehaviourConfigForSelectionCall } from '../behaviours/drag-element-event.js';
+import type * as d from "d3";
+import type { BrainLinkDatum } from "src/models/d3-datum/brain-link-datum";
+import type { BrainNodeDatum } from "src/models/d3-datum/brain-node-datum";
+import { getDragBehaviourConfigForSelectionCall } from "../behaviours/drag-element-event.js";
 
 export function handleSelectionDrag(
   forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>,

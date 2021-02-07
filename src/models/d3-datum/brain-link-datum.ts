@@ -1,5 +1,5 @@
-import type { SimulationLinkDatum } from 'd3';
-import type { BrainNodeDatum } from './brain-node-datum';
+import type { SimulationLinkDatum } from "d3";
+import type { BrainNodeDatum } from "./brain-node-datum";
 
 /**
  *
