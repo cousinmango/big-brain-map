@@ -160,6 +160,7 @@ export function drawChartFromData(
             ) => any,
             translatedTransform,
           );
+
         return builtPanZoomTransition;
       },
       // (_event: d.D3ZoomEvent<Element, unknown>, _d): d.ZoomBehavior<Element, unknown> => {
