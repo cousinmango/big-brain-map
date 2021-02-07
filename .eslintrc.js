@@ -1,6 +1,5 @@
 /* eslint-disable no-magic-numbers */
 
-
 /**
  * @type {import("eslint").Linter.Config}
  */
@@ -20,20 +19,16 @@ const config = {
     // "airbnb",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
-    "plugin:prettier/@typescript-eslint"
-
 
     // "eslint:recommended",
     // "google",
     // "plugin:@typescript-eslint/eslint-recommended",
     // "plugin:@typescript-eslint/recommended",
     // // Resolve conflicting eslint vs prettier
-    // "prettier/@typescript-eslint",
-
-
+    "prettier/@typescript-eslint",
 
     // Enable eslint-plugin-prettier and eslint-config-prettier.
-    // This will display prettier errors as ESLint errors. 
+    // This will display prettier errors as ESLint errors.
     // Make sure this is always the last configuration in the extends array.
     // "prettier",
     // "plugin:prettier/recommended"
@@ -42,9 +37,8 @@ const config = {
 
   parserOptions: {
     amd: true,
-    
     project: "./tsconfig.json",
-    
+    tsconfigRootDir: ".",
     ecmaFeatures: {
       arrowFunctions: true,
       binaryLiterals: true,
@@ -80,12 +74,21 @@ const config = {
     "@typescript-eslint/typedef": "error",
     "@typescript-eslint/explicit-function-return-type": ["error"],
     "@typescript-eslint/no-unused-vars": "error",
-    "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-angle-bracket-type-assertion": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-inferrable-types": "off",
-    "array-bracket-newline": "error",
+    
+    "@typescript-eslint/prefer-interface": "off", // also want to use "type"
+
+    "prettier/prettier": [
+      "error",
+      {
+        singleQuote: true,
+        semi: false,
+      },
+    ],
+    "array-bracket-newline": ["error", {"minItems": 2}],
     "array-bracket-spacing": "error",
     "array-element-newline": "error",
     "arrow-spacing": "error",
@@ -113,7 +116,6 @@ const config = {
       "error",
       120,
     ],
-
 
     "newline-before-return": "error",
     "no-const-assign": "error",
@@ -163,7 +165,6 @@ const config = {
       "error",
       "global",
     ],
-
 
   },
 };

@@ -152,7 +152,6 @@ export function drawChartFromData(
         const builtPanZoomTransition: TopLevelPanZoomTransition = panZoomTransitionToBuild
           .duration(transitionDurationMilliseconds)
           .call(zoomTransform.transform, translatedTransform);
-          
       },
       // (_event: d.D3ZoomEvent<Element, unknown>, _d): d.ZoomBehavior<Element, unknown> => {
 
