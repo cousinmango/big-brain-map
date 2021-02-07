@@ -79,14 +79,14 @@ export function drawChartFromData(
     SVGGElement,
     unknown
   > = svgContainerGroupG
-    .append("g",)
-    .attr("stroke", "#fff",)
+    .append("g")
+    .attr("stroke", "#fff")
     .attr("stroke-width", 1.5)
-    .selectAll("circle",);
+    .selectAll("circle");
 
   const paintedNodes: BrainNodeElementSelection = (circleNodes
     .data(nodes)
-    .join("circle",)
+    .join("circle")
     .attr("id", (node) => node.id)
     .attr("r", (node) => node.id.length * 4)
     .attr("fill", (node, _index, _groups) =>
@@ -95,7 +95,7 @@ export function drawChartFromData(
     .call(getDragBehaviourConfigForSelectionCall(forceSim, d3))
     .on(
       "click",
-      (zoomEvent, _node) => {
+      (_zoomEvent, _node) => {
         // Do we really need to pass in the node
         // Just to get the node id
         // and then mutate/select the DOM based on the passed in node ID?
@@ -151,7 +151,16 @@ export function drawChartFromData(
 
         const builtPanZoomTransition: TopLevelPanZoomTransition = panZoomTransitionToBuild
           .duration(transitionDurationMilliseconds)
-          .call(zoomTransform.transform, translatedTransform);
+          .call(
+            // - FIXME: Maybe there's an alternate way to set this up without using .call
+            // Coerced into a random type even though d3.Selection or d3.Transform should be callable
+            (zoomTransform.transform as unknown) as (
+              transition: d.Transition<SVGSVGElement, unknown, HTMLElement, unknown>,
+              ...args: any[]
+            ) => any,
+            translatedTransform,
+          );
+        return builtPanZoomTransition;
       },
       // (_event: d.D3ZoomEvent<Element, unknown>, _d): d.ZoomBehavior<Element, unknown> => {
 
@@ -179,17 +188,17 @@ export function drawChartFromData(
 
   const paintedLinks = getSelectedJoinedStrokeLinks(svgContainerGroupG, links);
 
-  const selectedLabelGGroup = svgContainerGroupG.append("g",);
-  const selectedTextLabels = selectedLabelGGroup.selectAll("text",);
+  const selectedLabelGGroup = svgContainerGroupG.append("g");
+  const selectedTextLabels = selectedLabelGGroup.selectAll("text");
 
   const paintedLabels = selectedTextLabels
     .data(nodes)
-    .join("text",)
+    .join("text")
     .text((node) => node.id)
-    .attr("fill", "black",)
-    .attr("dy", "0em",)
-    .attr("text-anchor", "middle",)
-    .attr("dominant-baseline", "middle",)
+    .attr("fill", "black")
+    .attr("dy", "0em")
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "middle")
     .call((_selection: any, ..._args: any[]) => {
       /**
        * The verbose way of the one-liner. Do not need to explicitly pass in these parameters
@@ -205,7 +214,7 @@ export function drawChartFromData(
    * Code documentation seems to prefer the trigger via selection.call()
    */
 
-  paintedNodes.append("title",).text((node) => node.id);
+  paintedNodes.append("title").text((node) => node.id);
 
   setupRepositioningTickHandler(forceSim, paintedNodes, paintedLinks, paintedLabels);
 }
@@ -214,17 +223,17 @@ function getSelectedJoinedStrokeLinks(
   links: BrainLinkDatum[],
 ): d.Selection<SomeElementForSelection, BrainLinkDatum, SVGGElement, unknown> {
   return svgContainerGroupG
-    .append("g",)
-    .attr("stroke", "#999",)
+    .append("g")
+    .attr("stroke", "#999")
     .attr("stroke-opacity", 0.6)
-    .selectAll("line",)
+    .selectAll("line")
     .data(links)
-    .join("line",)
+    .join("line")
     .attr("stroke-width", (node) => Math.sqrt(node.value));
 }
 
 function getAppendedGGroup(svg: d.Selection<SVGSVGElement, unknown, HTMLElement, any>) {
-  return svg.append("g",);
+  return svg.append("g");
 }
 
 function getCreateAppendedSvgToBodyWithViewBoxDimensions(
@@ -232,7 +241,7 @@ function getCreateAppendedSvgToBodyWithViewBoxDimensions(
   width: number = innerWidth,
   height: number = innerHeight,
 ) {
-  return d3.select("body",).append("svg",).attr("viewBox", `0 0 ${width} ${height}`);
+  return d3.select("body").append("svg").attr("viewBox", `0 0 ${width} ${height}`);
 }
 
 function simCollisionForceRadius(
