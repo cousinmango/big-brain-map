@@ -74,7 +74,7 @@ export function drawChartFromData(
   );
 
   const circleNodes: d.Selection<
-    d.BaseType,
+    Element,
     unknown,
     SVGGElement,
     unknown
@@ -135,8 +135,6 @@ export function drawChartFromData(
           translationY,
         );
 
-   
-
         const zoomTransform = d3
           .zoom()
           .extent([
@@ -151,11 +149,10 @@ export function drawChartFromData(
             parentGGroupToTransform.attr('transform', transform);
           });
 
-
-          const builtPanZoomTransition: TopLevelPanZoomTransition = panZoomTransitionToBuild
+        const builtPanZoomTransition: TopLevelPanZoomTransition = panZoomTransitionToBuild
           .duration(transitionDurationMilliseconds)
           .call(zoomTransform.transform, translatedTransform);
-
+          
       },
       // (_event: d.D3ZoomEvent<Element, unknown>, _d): d.ZoomBehavior<Element, unknown> => {
 

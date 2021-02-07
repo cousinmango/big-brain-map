@@ -10,27 +10,41 @@ const config = {
     es2021: true,
     node: true,
   },
-  extends: [
-    "eslint:recommended",
-    "google",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    // Resolve conflicting eslint vs prettier
-    "prettier/@typescript-eslint",
-    // Enable eslint-plugin-prettier and eslint-config-prettier.
-    // This will display prettier errors as ESLint errors. 
-    // Make sure this is always the last configuration in the extends array.
-    "prettier",
-    "plugin:prettier/recommended"
-
-  ],
+  parser: "@typescript-eslint/parser",
   plugins: [
     "@typescript-eslint",
     "prettier"
   ],
-  parser: "@typescript-eslint/parser",
+  extends: [
+
+    // "airbnb",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "plugin:prettier/@typescript-eslint"
+
+
+    // "eslint:recommended",
+    // "google",
+    // "plugin:@typescript-eslint/eslint-recommended",
+    // "plugin:@typescript-eslint/recommended",
+    // // Resolve conflicting eslint vs prettier
+    // "prettier/@typescript-eslint",
+
+
+
+    // Enable eslint-plugin-prettier and eslint-config-prettier.
+    // This will display prettier errors as ESLint errors. 
+    // Make sure this is always the last configuration in the extends array.
+    // "prettier",
+    // "plugin:prettier/recommended"
+
+  ],
+
   parserOptions: {
     amd: true,
+    
+    project: "./tsconfig.json",
+    
     ecmaFeatures: {
       arrowFunctions: true,
       binaryLiterals: true,
@@ -59,7 +73,6 @@ const config = {
       unicodeCodePointEscapes: true,
     },
     ecmaVersion: 2021,
-
     node: true,
     sourceType: "module",
   },
