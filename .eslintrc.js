@@ -80,13 +80,20 @@ const config = {
     "prettier/prettier": [
       "error",
       {
-        singleQuote: false,
+        printWidth: 100,
+        tabWidth: 2,
+        useTabs: false,
         semi: true,
+        singleQuote: false,
+        trailingComma: "all",
+        bracketSpacing: true,
+        arrowParens: "always",
       },
     ],
-    "array-bracket-newline": ["error", { minItems: 2 }],
+    // Clashing prettier eslint
+    // "array-bracket-newline": ["error", { minItems: 2 }],
     "array-bracket-spacing": "error",
-    "array-element-newline": "error",
+    // "array-element-newline": ["error", { minItems: 2 }],
     "arrow-spacing": "error",
     "brace-style": "error",
 

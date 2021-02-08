@@ -115,7 +115,7 @@ export function drawChartFromData(
         const viewCentreX = width / 2;
         const viewCentreY = height / 2;
 
-        const selectedWholeViewboxToRezoomTransformPan: ParentSvgGroupSelectionForWholeBrainMap = viewboxedParentSvg;
+        const selectedWholeViewboxToRezoomPan: ParentSvgGroupSelectionForWholeBrainMap = viewboxedParentSvg;
 
         /**
          * Pan zoom the whole rendered SVG
@@ -124,7 +124,7 @@ export function drawChartFromData(
 
         const baseTransform = d3.zoomIdentity;
         // No datum model for typing here. General top-level SVG and HTML
-        const panZoomTransitionToBuild: TopLevelPanZoomTransition = selectedWholeViewboxToRezoomTransformPan.transition();
+        const panZoomTransitionToBuild: TopLevelPanZoomTransition = selectedWholeViewboxToRezoomPan.transition();
         const transitionDurationMilliseconds = 750;
 
         const translationX = viewCentreX - nodeX;
@@ -142,7 +142,7 @@ export function drawChartFromData(
             [width, height],
           ])
           .scaleExtent([0.1, 8])
-          .on("zoom", (zoomEvent, _node) => {
+          .on("zoom", (zoomEvent, __node) => {
             // The end state of the zoom which would potentially be a reusable function
             const parentGGroupToTransform = svgContainerGroupG;
             const transform = zoomEvent.transform;
@@ -155,8 +155,10 @@ export function drawChartFromData(
             // - FIXME: Maybe there's an alternate way to set this up without using .call
             // Coerced into a random type even though d3.Selection or d3.Transform should be callable
             (zoomTransform.transform as unknown) as (
-              transition: d.Transition<SVGSVGElement, unknown, HTMLElement, unknown>,
-              ...args: any[]
+              // bug eslint does not realise this is type annotation TS vs JS.
+              // eslint-disable-next-line no-unused-vars
+              _transition: d.Transition<SVGSVGElement, unknown, HTMLElement, unknown>,
+              ..._args: any[]
             ) => any,
             translatedTransform,
           );
@@ -233,7 +235,9 @@ function getSelectedJoinedStrokeLinks(
     .attr("stroke-width", (node) => Math.sqrt(node.value));
 }
 
-function getAppendedGGroup(svg: d.Selection<SVGSVGElement, unknown, HTMLElement, any>) {
+function getAppendedGGroup(
+  svg: d.Selection<SVGSVGElement, unknown, HTMLElement, any>,
+): d.Selection<SVGGElement, unknown, HTMLElement, any> {
   return svg.append("g");
 }
 
@@ -241,7 +245,7 @@ function getCreateAppendedSvgToBodyWithViewBoxDimensions(
   d3: typeof d,
   width: number = innerWidth,
   height: number = innerHeight,
-) {
+): d.Selection<SVGSVGElement, unknown, HTMLElement, any> {
   return d3.select("body").append("svg").attr("viewBox", `0 0 ${width} ${height}`);
 }
 
@@ -251,7 +255,7 @@ function simCollisionForceRadius(
   forceNodeRadius: d.ForceCollide<BrainNodeDatum> = d3.forceCollide<BrainNodeDatum>(
     (node) => node.id.length * 5,
   ),
-) {
+): d.Simulation<BrainNodeDatum, BrainLinkDatum> {
   return forceSim.force("collisionForce", forceNodeRadius);
 }
 
@@ -259,25 +263,28 @@ function simCollisionForceRadius(
  *
  * @param forceSim simulation which handles positioning of elements nodes links labels on tick
  * @param d3 loaded/imported window d3
- * @param width Used to calculate the midpoint for centre along x axis. Defaults to window innerWidth DOM js global variable
- * @param height Used to calculate the midpoint for centre along y axis. Defaults to window innerWidth DOM js global variable
+ * @param width Used to calculate the midpoint for centre along x axis. Defaults to window innerWidth DOM js global var
+ * @param height Used to calculate the midpoint for centre along y axis. Defaults to window innerWidth DOM js global var
  */
 function simCenterWithinViewport(
   forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>,
   d3: typeof d,
   width = innerWidth / 2,
   height = innerHeight / 2,
-) {
+): d.Simulation<BrainNodeDatum, BrainLinkDatum> {
   return forceSim.force("center", d3.forceCenter(width, height));
 }
 
-function simForceCharge(forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>, d3: typeof d) {
+function simForceCharge(
+  forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>,
+  d3: typeof d,
+): d.Simulation<BrainNodeDatum, BrainLinkDatum> {
   return forceSim.force("charge", d3.forceManyBody<BrainNodeDatum>().strength(-500));
 }
 
 function simForceLink(
   forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>,
   collisionForceLink: d.ForceLink<BrainNodeDatum, BrainLinkDatum>,
-) {
+): d.Simulation<BrainNodeDatum, BrainLinkDatum> {
   return forceSim.force("link", collisionForceLink);
 }
