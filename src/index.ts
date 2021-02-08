@@ -11,4 +11,7 @@ export const d3: typeof d = window.d3;
 
 const seedData: BrainMap = miserableData;
 
-drawChartFromData(seedData, d3);
+const drawnSelections = drawChartFromData(seedData, d3);
+
+drawnSelections.nodesSelection;
+// Mutate data array ? auto simulation tick nodes and links hopefully.

@@ -109,7 +109,7 @@ export type AliasedNodeOrLinkSelection<D extends BrainNodeDatum | BrainLinkDatum
 >;
 
 export type AliasedLabelSelection = d.Selection<
-  Element | d.EnterElement | Document | Window | SVGTextElement | null,
+  Element | d.EnterElement | SVGTextElement,
   BrainNodeDatum,
   SVGGElement,
   unknown

@@ -1,5 +1,7 @@
 import type * as d from "d3";
 import type {
+  AliasedLabelSelection,
+  AliasedLinkSelection,
   BrainNodeElementSelection,
   ParentSvgGroupSelectionForWholeBrainMap,
   ParentSvgGGroupSelectionForMappedNodesLinksLabels,
@@ -20,11 +22,31 @@ export function getScaledColourValueFromNodeGroup(
   return scale(`${node.group}`);
 }
 
+/**
+ *
+ * Should refactor this.
+ * @param nodesLinksData zz
+ * @param d3 zz
+ * @param initedColourScale zz
+ */
 export function drawChartFromData(
   nodesLinksData: BrainMap,
   d3: typeof d,
   initedColourScale: BrainColourScale = d3.scaleOrdinal(d3.schemeCategory10),
-): void {
+): {
+  /**
+   * alternatively use nth selectors 1 2 3 for nodes links labels g
+   * body > svg > g > g:nth-child(1)
+   * body > svg > g > g:nth-child(2)
+   * body > svg > g > g:nth-child(3)
+   *
+   * or add another identifier
+   */
+  brainSim: d.Simulation<BrainNodeDatum, BrainLinkDatum>;
+  nodesSelection: BrainNodeElementSelection;
+  linksSelection: AliasedLinkSelection;
+  labelsSelection: AliasedLabelSelection;
+} {
   const { nodes, links } = nodesLinksData;
 
   const forceSim: d.Simulation<BrainNodeDatum, BrainLinkDatum> = d3.forceSimulation(nodes);
@@ -195,6 +217,13 @@ export function drawChartFromData(
   paintedNodes.append("title").text((node) => node.id);
 
   setupRepositioningTickHandler(forceSim, paintedNodes, paintedLinks, paintedLabels);
+
+  return {
+    brainSim: forceSim,
+    nodesSelection: paintedNodes,
+    linksSelection: paintedLinks,
+    labelsSelection: paintedLabels,
+  };
 }
 function getSelectedJoinedStrokeLinks(
   svgContainerGroupG: d.Selection<SVGGElement, unknown, HTMLElement, any>,
