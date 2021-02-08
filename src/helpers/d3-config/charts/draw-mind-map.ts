@@ -107,7 +107,7 @@ export function drawChartFromData(
     .selectAll("circle");
 
   const paintedNodes: BrainNodeElementSelection = (circleNodes
-    .data(nodes)
+    .data(nodes, (node) => node.id)
     .join("circle")
     .attr("id", (node) => node.id)
     .attr("r", (node) => node.id.length * 4)
@@ -191,8 +191,8 @@ export function drawChartFromData(
   const selectedLabelGGroup = svgContainerGroupG.append("g");
   const selectedTextLabels = selectedLabelGGroup.selectAll("text");
 
-  const paintedLabels = selectedTextLabels
-    .data(nodes)
+  const paintedLabels: AliasedLabelSelection = selectedTextLabels
+    .data(nodes, (_node) => _node.id)
     .join("text")
     .text((node) => node.id)
     .attr("fill", "black")
@@ -205,7 +205,7 @@ export function drawChartFromData(
        * Shown here for clarity future maintainability of the types, how the DragBehaviour selection trigger works
        */
       return getDragBehaviourConfigForSelectionCall(forceSim, d3)(_selection, _args);
-    });
+    }) as AliasedLabelSelection;
 
   /**
    * selection.call(dragBehaviour)
@@ -229,12 +229,12 @@ function getSelectedJoinedStrokeLinks(
   svgContainerGroupG: d.Selection<SVGGElement, unknown, HTMLElement, any>,
   links: BrainLinkDatum[],
 ): d.Selection<SomeElementForSelection, BrainLinkDatum, SVGGElement, unknown> {
-  return svgContainerGroupG
+  return (svgContainerGroupG
     .append("g")
     .attr("stroke", "#999")
     .attr("stroke-opacity", 0.6)
-    .selectAll("line")
-    .data(links)
+    .selectAll("line") as AliasedLinkSelection)
+    .data(links, (link: BrainLinkDatum) => link.source + "lolgglolid" + link.target)
     .join("line")
     .attr("stroke-width", (node) => Math.sqrt(node.value));
 }
