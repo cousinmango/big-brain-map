@@ -32,7 +32,7 @@ const config = {
 
   parserOptions: {
     amd: true,
-    project: "./tsconfig.json",
+    // project: "./tsconfig.json",
     tsconfigRootDir: ".",
     ecmaFeatures: {
       arrowFunctions: true,
