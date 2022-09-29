@@ -4,7 +4,7 @@
   "description": "Your brain mapped mind brain map",
   "main": "index.js",
   "dependencies": {
-    "d3": "^6.3.1"
+    "d3": "^7.6.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
